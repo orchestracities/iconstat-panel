@@ -1,0 +1,30 @@
+{
+  "name": "statistics-panel",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Statistics panel for grafana",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ubiwhere/statistics_panel.git"
+  },
+  "author": "Ubiwhere",
+  "license": "MIT",
+  "scripts": {
+    "build": "grunt"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "grunt": "^1.0.2",
+    "grunt-babel": "^7.0.0",
+    "grunt-contrib-clean": "^1.1.0",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-uglify": "^3.3.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-execute": "^0.2.2",
+    "grunt-systemjs-builder": "^1.0.0",
+    "load-grunt-tasks": "^3.5.2"
+  },
+  "dependencies": {
+  }
+}
