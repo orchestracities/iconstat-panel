@@ -5,9 +5,26 @@
   height: 100%;
 }
 
+
+.statistics-panel-title-container {
+  height: 10px;
+  display: table-row;
+  vertical-align: top;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  font-size: 2em;
+  font-weight: bold;
+}
+
+.statistics-panel-title-container > .statistics-panel-title-content {
+  padding-left: 10px;
+  text-align: center;
+}
+
 .statistics-panel-value-container {
   line-height: 1;
-  display: table-cell;
+  display: table-row;
   vertical-align: middle;
   text-align: center;
   position: relative;
@@ -15,6 +32,13 @@
   font-size: 3em;
   font-weight: bold;
 }
+
+.statistics-panel-value-container>.statistics-panel-value {
+    display: table-cell;
+  vertical-align: middle;
+}
+
+
 
 .statistics-panel-prefix {
   padding-right: 20px;

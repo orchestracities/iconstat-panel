@@ -79,6 +79,13 @@ class StatisticsCtrl extends MetricsPanelCtrl {
         thresholdLabels: false,
       },
       tableColumn: '',
+      subtitle: 'NA',
+      iconTypes: [
+      'info-circle', 'save', 'editor', 'controller', 'exclamation-triangle',
+      'fighter-jet', 'file', 'home', 'inbox', 'leaf', 'map-marker', 'motorcycle',
+      'plane', 'recycle', 'taxi', 'subway', 'table', 'thermometer-half',
+       'tree', 'trash', 'truck', 'umbrella', 'volume-up'],
+      iconType: ''
     };
 
     _.defaultsDeep(this.panel, this.panelDefaults);
@@ -635,7 +642,13 @@ class StatisticsCtrl extends MetricsPanelCtrl {
         elem.css('background-color', '');
       }
 
-      elem.html(body);
+      let title = '<div class="statistics-panel-title-container">'+
+                    '<span class="fa fa-'+panel.iconType+'"></span>'+
+                    '<span class="statistics-panel-title-content">'+panel.subtitle+'</span>'+
+                  '</div>';
+
+      elem.html(title);
+      elem.append(body);
 
       if (panel.sparkline.show) {
         addSparkline();

@@ -102,7 +102,10 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
         thresholdMarkers: true,
         thresholdLabels: false
       },
-      tableColumn: ''
+      tableColumn: '',
+      subtitle: '',
+      iconTypes: ['info-circle', 'save', 'editor', 'controller', 'exclamation-triangle', 'fighter-jet', 'file', 'home', 'inbox', 'leaf', 'map-marker', 'motorcycle', 'plane', 'recycle', 'taxi', 'subway', 'table', 'thermometer-half', 'tree', 'trash', 'truck', 'umbrella', 'volume-up'],
+      iconType: ''
     };
 
     _lodash2.default.defaultsDeep(_this.panel, _this.panelDefaults);
@@ -678,7 +681,10 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
           elem.css('background-color', '');
         }
 
-        elem.html(body);
+        var title = '<div class="statistics-panel-title-container">' + '<span class="fa fa-' + panel.iconType + '"></span>' + '<span class="statistics-panel-title-content">' + panel.subtitle + '</span>' + '</div>';
+
+        elem.html(title);
+        elem.append(body);
 
         if (panel.sparkline.show) {
           addSparkline();
