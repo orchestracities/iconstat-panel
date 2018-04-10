@@ -12,12 +12,16 @@ import { MetricsPanelCtrl } from 'app/plugins/sdk';
 import './styles/panel.css!';
 
 export const PLUGIN_PATH = 'public/plugins/statistics-panel/'
+export const REMOTE_SERVER = 'https://orion.s.orchestracities.com/v2/entities/Antwerpen'
 
 class StatisticsCtrl extends MetricsPanelCtrl {
 
   /** @ngInject */
   constructor($scope, $injector, $location, linkSrv) {
     super($scope, $injector);
+
+    this.remote_server= REMOTE_SERVER;
+    this.base_path= PLUGIN_PATH;
 
     this.dataType = 'timeseries';
     this.series = [];
@@ -85,7 +89,9 @@ class StatisticsCtrl extends MetricsPanelCtrl {
       'fighter-jet', 'file', 'home', 'inbox', 'leaf', 'map-marker', 'motorcycle',
       'plane', 'recycle', 'taxi', 'subway', 'table', 'thermometer-half',
        'tree', 'trash', 'truck', 'umbrella', 'volume-up'],
-      iconType: ''
+      iconType: '',
+      allow_modify: false
+
     };
 
     _.defaultsDeep(this.panel, this.panelDefaults);

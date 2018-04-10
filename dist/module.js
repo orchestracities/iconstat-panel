@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getColorForValue = exports.PanelCtrl = exports.StatisticsCtrl = exports.PLUGIN_PATH = undefined;
+exports.getColorForValue = exports.PanelCtrl = exports.StatisticsCtrl = exports.REMOTE_SERVER = exports.PLUGIN_PATH = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -45,6 +45,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 //import 'app/features/panellinks/link_srv';
 
 var PLUGIN_PATH = exports.PLUGIN_PATH = 'public/plugins/statistics-panel/';
+var REMOTE_SERVER = exports.REMOTE_SERVER = 'http://ponte.iot.citibrain.com/resources/';
 
 var StatisticsCtrl = function (_MetricsPanelCtrl) {
   _inherits(StatisticsCtrl, _MetricsPanelCtrl);
@@ -54,6 +55,9 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
     _classCallCheck(this, StatisticsCtrl);
 
     var _this = _possibleConstructorReturn(this, (StatisticsCtrl.__proto__ || Object.getPrototypeOf(StatisticsCtrl)).call(this, $scope, $injector));
+
+    _this.remote_server = REMOTE_SERVER;
+    _this.base_path = PLUGIN_PATH;
 
     _this.dataType = 'timeseries';
     _this.series = [];
@@ -105,7 +109,9 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
       tableColumn: '',
       subtitle: 'NA',
       iconTypes: ['info-circle', 'save', 'editor', 'controller', 'exclamation-triangle', 'fighter-jet', 'file', 'home', 'inbox', 'leaf', 'map-marker', 'motorcycle', 'plane', 'recycle', 'taxi', 'subway', 'table', 'thermometer-half', 'tree', 'trash', 'truck', 'umbrella', 'volume-up'],
-      iconType: ''
+      iconType: '',
+      allow_modify: false
+
     };
 
     _lodash2.default.defaultsDeep(_this.panel, _this.panelDefaults);
