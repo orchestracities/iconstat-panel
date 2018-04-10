@@ -432,7 +432,7 @@ class StatisticsCtrl extends MetricsPanelCtrl {
     }
 
     function getBigValueHtml() {
-      var body = '<div class="statistics-panel-value-container">';
+      var body = '<div class="statistics-panel-value-container"><div>';
 
       if (panel.prefix) {
         var prefix = applyColoringThresholds(data.value, panel.prefix);
@@ -447,7 +447,7 @@ class StatisticsCtrl extends MetricsPanelCtrl {
         body += getSpan('statistics-panel-postfix', panel.postfixFontSize, postfix);
       }
 
-      body += '</div>';
+      body += '</div></div>';
 
       return body;
     }

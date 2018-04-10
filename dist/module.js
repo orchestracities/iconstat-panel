@@ -103,7 +103,7 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
         thresholdLabels: false
       },
       tableColumn: '',
-      subtitle: '',
+      subtitle: 'NA',
       iconTypes: ['info-circle', 'save', 'editor', 'controller', 'exclamation-triangle', 'fighter-jet', 'file', 'home', 'inbox', 'leaf', 'map-marker', 'motorcycle', 'plane', 'recycle', 'taxi', 'subway', 'table', 'thermometer-half', 'tree', 'trash', 'truck', 'umbrella', 'volume-up'],
       iconType: ''
     };
@@ -471,7 +471,7 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
       }
 
       function getBigValueHtml() {
-        var body = '<div class="statistics-panel-value-container">';
+        var body = '<div class="statistics-panel-value-container"><div>';
 
         if (panel.prefix) {
           var prefix = applyColoringThresholds(data.value, panel.prefix);
@@ -486,7 +486,7 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
           body += getSpan('statistics-panel-postfix', panel.postfixFontSize, postfix);
         }
 
-        body += '</div>';
+        body += '</div></div>';
 
         return body;
       }

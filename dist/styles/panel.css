@@ -5,7 +5,6 @@
   height: 100%;
 }
 
-
 .statistics-panel-title-container {
   height: 10px;
   display: table-row;
@@ -13,8 +12,8 @@
   text-align: center;
   position: relative;
   z-index: 1;
-  font-size: 2em;
-  font-weight: bold;
+  font-size: 1.5rem;
+  /*font-weight: bold;*/
 }
 
 .statistics-panel-title-container > .statistics-panel-title-content {
@@ -23,7 +22,7 @@
 }
 
 .statistics-panel-value-container {
-  line-height: 1;
+/*  line-height: 1;*/
   display: table-row;
   vertical-align: middle;
   text-align: center;
@@ -33,17 +32,16 @@
   font-weight: bold;
 }
 
-.statistics-panel-value-container>.statistics-panel-value {
-    display: table-cell;
+.statistics-panel-value-container>div {
+  display: table-cell;
   vertical-align: middle;
 }
-
-
-
+.statistics-panel-value-container>div>.statistics-panel-value {
+}
 .statistics-panel-prefix {
   padding-right: 20px;
 }
 
 #flotGagueValue0 {
-  font-weight: bold; //please dont hurt me for this!
+  font-weight: bold;
 }
