@@ -2,17 +2,14 @@ import _ from 'lodash';
 import $ from 'jquery';
 import 'vendor/flot/jquery.flot.js';
 import 'vendor/flot/jquery.flot.gauge.js';
-//import 'app/features/panellinks/link_srv';
-
+//grafana specific
 import kbn from 'app/core/utils/kbn';
 import config from 'app/core/config';
 import TimeSeries from 'app/core/time_series2';
 import { MetricsPanelCtrl } from 'app/plugins/sdk';
-
+//plugin specific
+import definitions from './definitions';
 import './styles/panel.css!';
-
-export const PLUGIN_PATH = 'public/plugins/statistics-panel/'
-export const REMOTE_SERVER = 'https://orion.s.orchestracities.com/v2/entities/Antwerpen'
 
 class StatisticsCtrl extends MetricsPanelCtrl {
 
@@ -20,9 +17,9 @@ class StatisticsCtrl extends MetricsPanelCtrl {
   constructor($scope, $injector, $location, linkSrv) {
     super($scope, $injector);
 
-    this.remote_server= REMOTE_SERVER;
-    this.base_path= PLUGIN_PATH;
-
+    this.remote_server = definitions.remote_server;
+    this.base_path = definitions.plugin_path;
+console.log(definitions)
     this.dataType = 'timeseries';
     this.series = [];
     this.data = [];
@@ -90,8 +87,8 @@ class StatisticsCtrl extends MetricsPanelCtrl {
       'plane', 'recycle', 'taxi', 'subway', 'table', 'thermometer-half',
        'tree', 'trash', 'truck', 'umbrella', 'volume-up'],
       iconType: '',
-      allow_modify: false
-
+      allowModify: false,
+      modalValue:''
     };
 
     _.defaultsDeep(this.panel, this.panelDefaults);
@@ -103,12 +100,35 @@ class StatisticsCtrl extends MetricsPanelCtrl {
 
     this.onSparklineColorChange = this.onSparklineColorChange.bind(this);
     this.onSparklineFillChange = this.onSparklineFillChange.bind(this);
+
+    this.handleClickPanel = this.showPanel.bind(this);
+    this.handleSendToRemote = this.sendToRemote.bind(this);
+  }
+
+  showPanel() {
+    var modalScope = this.$scope.$new();
+    modalScope.panel = this.panel;
+
+    this.publishAppEvent('show-modal', {
+      src: this.base_path+'change_value_popup.html',
+      modalClass: 'confirm-modal',
+      scope: modalScope,
+    });
+  }
+
+  sendToRemote() {
+    console.log('TO-DO: fetch POST with headers...')
+    console.log('url: '+definitions.remote_server)
+    console.log('header: '+definitions.request_header)
+    console.log('value '+this.panel.modalValue)
+
+    document.querySelector('.modal-content > .server-response').innerHTML='<blockquote><p>Msg sent</p></blockquote>'
   }
 
   onInitEditMode() {
     this.fontSizes = ['20%', '30%', '50%', '70%', '80%', '100%', '110%', '120%', '150%', '170%', '200%'];
-    this.addEditorTab('Options', `${PLUGIN_PATH}editor.html`, 2);
-    this.addEditorTab('Value Mappings', `${PLUGIN_PATH}mappings.html`, 3);
+    this.addEditorTab('Options', `${definitions.plugin_path}editor.html`, 2);
+    this.addEditorTab('Value Mappings', `${definitions.plugin_path}mappings.html`, 3);
     this.unitFormats = kbn.getUnitFormats();
   }
 
@@ -411,6 +431,7 @@ class StatisticsCtrl extends MetricsPanelCtrl {
 
   link(scope, elem, attrs, ctrl) {
     var $location = this.$location;
+    console.log($location)
     var linkSrv = this.linkSrv;
     var $timeout = this.$timeout;
     var panel = ctrl.panel;
@@ -666,12 +687,11 @@ class StatisticsCtrl extends MetricsPanelCtrl {
 
       elem.toggleClass('pointer', panel.links.length > 0);
 
-      /*if (panel.links.length > 0) {
+      if (panel.links.length > 0) {
         linkInfo = linkSrv.getPanelLinkAnchorInfo(panel.links[0], data.scopedVars);
       } else {
         linkInfo = null;
-      }*/
-      linkInfo = null;
+      }
     }
 
     function hookupDrilldownLinkTooltip() {

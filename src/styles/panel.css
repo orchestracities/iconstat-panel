@@ -3,6 +3,7 @@
   display: table;
   width: 100%;
   height: 100%;
+  color: #f7f8fa;
 }
 
 .statistics-panel-title-container {
@@ -42,6 +43,10 @@
   padding-right: 20px;
 }
 
-#flotGagueValue0 {
+/*#flotGagueValue0 {
   font-weight: bold;
+}
+*/
+.inline-block {
+  display: inline-block;
 }

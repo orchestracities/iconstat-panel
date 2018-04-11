@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getColorForValue = exports.PanelCtrl = exports.StatisticsCtrl = exports.REMOTE_SERVER = exports.PLUGIN_PATH = undefined;
+exports.getColorForValue = exports.PanelCtrl = exports.StatisticsCtrl = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -33,6 +33,10 @@ var _time_series2 = _interopRequireDefault(_time_series);
 
 var _sdk = require('app/plugins/sdk');
 
+var _definitions = require('./definitions');
+
+var _definitions2 = _interopRequireDefault(_definitions);
+
 require('./styles/panel.css!');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -42,10 +46,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-//import 'app/features/panellinks/link_srv';
+//grafana specific
 
-var PLUGIN_PATH = exports.PLUGIN_PATH = 'public/plugins/statistics-panel/';
-var REMOTE_SERVER = exports.REMOTE_SERVER = 'http://ponte.iot.citibrain.com/resources/';
+//plugin specific
+
 
 var StatisticsCtrl = function (_MetricsPanelCtrl) {
   _inherits(StatisticsCtrl, _MetricsPanelCtrl);
@@ -56,9 +60,9 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
 
     var _this = _possibleConstructorReturn(this, (StatisticsCtrl.__proto__ || Object.getPrototypeOf(StatisticsCtrl)).call(this, $scope, $injector));
 
-    _this.remote_server = REMOTE_SERVER;
-    _this.base_path = PLUGIN_PATH;
-
+    _this.remote_server = _definitions2.default.remote_server;
+    _this.base_path = _definitions2.default.plugin_path;
+    console.log(_definitions2.default);
     _this.dataType = 'timeseries';
     _this.series = [];
     _this.data = [];
@@ -110,8 +114,8 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
       subtitle: 'NA',
       iconTypes: ['info-circle', 'save', 'editor', 'controller', 'exclamation-triangle', 'fighter-jet', 'file', 'home', 'inbox', 'leaf', 'map-marker', 'motorcycle', 'plane', 'recycle', 'taxi', 'subway', 'table', 'thermometer-half', 'tree', 'trash', 'truck', 'umbrella', 'volume-up'],
       iconType: '',
-      allow_modify: false
-
+      allowModify: false,
+      modalValue: ''
     };
 
     _lodash2.default.defaultsDeep(_this.panel, _this.panelDefaults);
@@ -123,15 +127,39 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
 
     _this.onSparklineColorChange = _this.onSparklineColorChange.bind(_this);
     _this.onSparklineFillChange = _this.onSparklineFillChange.bind(_this);
+
+    _this.handleClickPanel = _this.showPanel.bind(_this);
+    _this.handleSendToRemote = _this.sendToRemote.bind(_this);
     return _this;
   }
 
   _createClass(StatisticsCtrl, [{
+    key: 'showPanel',
+    value: function showPanel() {
+      var modalScope = this.$scope.$new();
+      modalScope.panel = this.panel;
+
+      this.publishAppEvent('show-modal', {
+        src: this.base_path + 'change_value_popup.html',
+        modalClass: 'confirm-modal',
+        scope: modalScope
+      });
+    }
+  }, {
+    key: 'sendToRemote',
+    value: function sendToRemote() {
+      console.log('TO-DO: fetch POST with headers...');
+      console.log('url: ' + _definitions2.default.remote_server);
+      console.log('value ' + this.panel.modalValue);
+
+      document.querySelector('.modal-content > .server-response').innerHTML = '<blockquote><p>Msg sent</p></blockquote>';
+    }
+  }, {
     key: 'onInitEditMode',
     value: function onInitEditMode() {
       this.fontSizes = ['20%', '30%', '50%', '70%', '80%', '100%', '110%', '120%', '150%', '170%', '200%'];
-      this.addEditorTab('Options', PLUGIN_PATH + 'editor.html', 2);
-      this.addEditorTab('Value Mappings', PLUGIN_PATH + 'mappings.html', 3);
+      this.addEditorTab('Options', _definitions2.default.plugin_path + 'editor.html', 2);
+      this.addEditorTab('Value Mappings', _definitions2.default.plugin_path + 'mappings.html', 3);
       this.unitFormats = _kbn2.default.getUnitFormats();
     }
   }, {
@@ -450,6 +478,7 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
     key: 'link',
     value: function link(scope, elem, attrs, ctrl) {
       var $location = this.$location;
+      console.log($location);
       var linkSrv = this.linkSrv;
       var $timeout = this.$timeout;
       var panel = ctrl.panel;
@@ -702,12 +731,11 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
 
         elem.toggleClass('pointer', panel.links.length > 0);
 
-        /*if (panel.links.length > 0) {
+        if (panel.links.length > 0) {
           linkInfo = linkSrv.getPanelLinkAnchorInfo(panel.links[0], data.scopedVars);
         } else {
           linkInfo = null;
-        }*/
-        linkInfo = null;
+        }
       }
 
       function hookupDrilldownLinkTooltip() {

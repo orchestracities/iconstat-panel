@@ -1,27 +1,6 @@
-
 <div class="editor-row">
-  <div class="section gf-form-group">
-    <h5 class="section-heading">Panel Options</h5>
-    <div class="gf-form">
-      <span class="gf-form-label width-12">Panel Title</span>
-      <input type="text" ng-model="ctrl.panel.subtitle" class="gf-form-input max-width-12" ng-change="ctrl.render()">
-    </div>
-
-    <div class="gf-form">
-      <span class="gf-form-label width-12">Title Icon
-        <info-popover mode="right-normal">The icon to be shown</info-popover>
-      </span>
-      <div class="gf-form-select-wrapper max-width-12">
-        <select class="gf-form-input"
-          ng-init="ctrl.panel.iconType = (ctrl.panel.iconType ? ctrl.panel.iconType : ctrl.panel.iconTypes[0])"
-          ng-model="ctrl.panel.iconType"
-          ng-options="iconType for iconType in ctrl.panel.iconTypes"
-          ng-change="ctrl.render()"
-          required>
-        </select>
-      </div>
-    </div>
-  </div>
+  <!-- Options Section -->
+  <ng-include src="ctrl.base_path+'_options.html'"></ng-include>
 
   <!-- Values Section -->
   <ng-include src="ctrl.base_path+'_values.html'"></ng-include>
@@ -31,5 +10,4 @@
 
   <!-- Graph Section -->
   <ng-include src="ctrl.base_path+'_graph.html'"></ng-include>
-
 </div>
