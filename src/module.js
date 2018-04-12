@@ -19,7 +19,6 @@ class StatisticsCtrl extends MetricsPanelCtrl {
 
     this.remote_server = definitions.remote_server;
     this.base_path = definitions.plugin_path;
-console.log(definitions)
     this.dataType = 'timeseries';
     this.series = [];
     this.data = [];
@@ -101,34 +100,60 @@ console.log(definitions)
     this.onSparklineColorChange = this.onSparklineColorChange.bind(this);
     this.onSparklineFillChange = this.onSparklineFillChange.bind(this);
 
-    this.handleClickPanel = this.showPanel.bind(this);
+    this.handleClickPanel = this.showModal.bind(this);
     this.handleSendToRemote = this.sendToRemote.bind(this);
   }
 
-  showPanel() {
+  showModal() {
+    if(!this.panel.allowModify)
+      return ;
+
     var modalScope = this.$scope.$new();
     modalScope.panel = this.panel;
 
     this.publishAppEvent('show-modal', {
-      src: this.base_path+'change_value_popup.html',
+      src: this.base_path+'partials/modal.html',
       modalClass: 'confirm-modal',
       scope: modalScope,
     });
   }
 
   sendToRemote() {
-    console.log('TO-DO: fetch POST with headers...')
-    console.log('url: '+definitions.remote_server)
-    console.log('header: '+definitions.request_header)
-    console.log('value '+this.panel.modalValue)
+    console.log('Sending to remote...')
 
-    document.querySelector('.modal-content > .server-response').innerHTML='<blockquote><p>Msg sent</p></blockquote>'
+    let url = definitions.remote_server.replace('<device_id>', document.querySelector('#form_device_id').value);
+    let data = {value: document.querySelector('#form_device_value').value};
+
+    fetch(url, {
+      method: 'POST', // or 'PUT'
+      body: JSON.stringify(data), // data can be `string` or {object}!
+      headers: new Headers(definitions.request_header)
+    })
+//    .then((res) => res.json())
+    .then((response) => {
+      if(response.ok) {
+        console.log('Success:', response)
+        processResponse('success', 'Successfuly updated!')
+      } else
+        processResponse('warning', 'Error updating!')
+    })
+    .catch((error) => {
+      console.log('Error:', error)
+      processResponse('warning', error)
+    })
+
+//console.log(this.data)
+
+    function processResponse(type, msg) {
+      document.querySelector('.modal-content > .server-response').innerHTML=`<div class='alert alert-${type} fade in alert-dismissible'>${msg}</div>`
+    }
+
   }
 
   onInitEditMode() {
     this.fontSizes = ['20%', '30%', '50%', '70%', '80%', '100%', '110%', '120%', '150%', '170%', '200%'];
-    this.addEditorTab('Options', `${definitions.plugin_path}editor.html`, 2);
-    this.addEditorTab('Value Mappings', `${definitions.plugin_path}mappings.html`, 3);
+    this.addEditorTab('Options', `${definitions.plugin_path}partials/editor.html`, 2);
+    this.addEditorTab('Value Mappings', `${definitions.plugin_path}partials/mappings.html`, 3);
     this.unitFormats = kbn.getUnitFormats();
   }
 
@@ -431,7 +456,6 @@ console.log(definitions)
 
   link(scope, elem, attrs, ctrl) {
     var $location = this.$location;
-    console.log($location)
     var linkSrv = this.linkSrv;
     var $timeout = this.$timeout;
     var panel = ctrl.panel;
@@ -765,4 +789,4 @@ function getColorForValue(data, value) {
 
 export { StatisticsCtrl, StatisticsCtrl as PanelCtrl, getColorForValue };
 
-StatisticsCtrl.templateUrl = 'module.html';
+StatisticsCtrl.templateUrl = 'partials/module.html';

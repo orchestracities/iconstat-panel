@@ -50,3 +50,8 @@
 .inline-block {
   display: inline-block;
 }
+
+form label {
+  text-align: left;
+  font-weight: bold;
+}

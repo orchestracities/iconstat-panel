@@ -13,7 +13,8 @@
       "small": "img/icn-statistics-panel.svg",
       "large": "img/icn-statistics-panel.svg"
     },
-    "version": "1.0.0"
+    "version": "1.0.0",
+    "updated": "2018-04-12"
   },
   "dependencies": {
     "grafanaVersion": "5.x.x",

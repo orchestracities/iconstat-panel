@@ -5,7 +5,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 var PLUGIN_PATH = 'public/plugins/statistics-panel/';
 var REMOTE_SERVER = 'https://orion.s.orchestracities.com/v2/entities/<device_id>/attrs/?options=keyValues';
-var REQUEST_HEADER = "'Content-Type': 'application/json, Fiware-Service': 'default, 'Fiware-ServicePath': '/'";
+var REQUEST_HEADER = {
+  'Content-Type': 'application/json',
+  'Fiware-Service': 'default',
+  'Fiware-ServicePath': '/'
+};
 
 exports.default = {
   plugin_path: PLUGIN_PATH,

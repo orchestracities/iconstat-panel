@@ -11,16 +11,16 @@ module.exports = function(grunt) {
     clean: ["dist"],
 
     copy: {
-      src_to_dist: {
+      srcToDist: {
         cwd: 'src',
         expand: true,
-        src: ['styles/*', 'img/*', '**/*.html', '!**/*.js'],
+        src: ['plugin.json', 'styles/*', 'img/*', '**/*.html', '!**/*.js'],
         dest: 'dist'
       },
 
       pluginDef: {
         expand: true,
-        src: [ 'plugin.json', 'README.md' ],
+        src: [ 'README.md' ],
         dest: 'dist'
       }
     },
@@ -53,5 +53,5 @@ module.exports = function(grunt) {
 
 
 //  grunt.loadNpmTasks("grunt-ts");
-  grunt.registerTask('default', ['clean', 'copy:src_to_dist', 'copy:pluginDef', 'babel']);
+  grunt.registerTask('default', ['clean', 'copy:srcToDist', 'copy:pluginDef', 'babel']);
 };

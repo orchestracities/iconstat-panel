@@ -62,7 +62,6 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
 
     _this.remote_server = _definitions2.default.remote_server;
     _this.base_path = _definitions2.default.plugin_path;
-    console.log(_definitions2.default);
     _this.dataType = 'timeseries';
     _this.series = [];
     _this.data = [];
@@ -128,19 +127,21 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
     _this.onSparklineColorChange = _this.onSparklineColorChange.bind(_this);
     _this.onSparklineFillChange = _this.onSparklineFillChange.bind(_this);
 
-    _this.handleClickPanel = _this.showPanel.bind(_this);
+    _this.handleClickPanel = _this.showModal.bind(_this);
     _this.handleSendToRemote = _this.sendToRemote.bind(_this);
     return _this;
   }
 
   _createClass(StatisticsCtrl, [{
-    key: 'showPanel',
-    value: function showPanel() {
+    key: 'showModal',
+    value: function showModal() {
+      if (!this.panel.allowModify) return;
+
       var modalScope = this.$scope.$new();
       modalScope.panel = this.panel;
 
       this.publishAppEvent('show-modal', {
-        src: this.base_path + 'change_value_popup.html',
+        src: this.base_path + 'partials/modal.html',
         modalClass: 'confirm-modal',
         scope: modalScope
       });
@@ -148,18 +149,39 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
   }, {
     key: 'sendToRemote',
     value: function sendToRemote() {
-      console.log('TO-DO: fetch POST with headers...');
-      console.log('url: ' + _definitions2.default.remote_server);
-      console.log('value ' + this.panel.modalValue);
+      console.log('Sending to remote...');
 
-      document.querySelector('.modal-content > .server-response').innerHTML = '<blockquote><p>Msg sent</p></blockquote>';
+      var url = _definitions2.default.remote_server.replace('<device_id>', document.querySelector('#form_device_id').value);
+      var data = { value: document.querySelector('#form_device_value').value };
+
+      fetch(url, {
+        method: 'POST', // or 'PUT'
+        body: JSON.stringify(data), // data can be `string` or {object}!
+        headers: new Headers(_definitions2.default.request_header)
+      })
+      //    .then((res) => res.json())
+      .then(function (response) {
+        if (response.ok) {
+          console.log('Success:', response);
+          processResponse('success', 'Successfuly updated!');
+        } else processResponse('warning', 'Error updating!');
+      }).catch(function (error) {
+        console.log('Error:', error);
+        processResponse('warning', error);
+      });
+
+      //console.log(this.data)
+
+      function processResponse(type, msg) {
+        document.querySelector('.modal-content > .server-response').innerHTML = '<div class=\'alert alert-' + type + ' fade in alert-dismissible\'>' + msg + '</div>';
+      }
     }
   }, {
     key: 'onInitEditMode',
     value: function onInitEditMode() {
       this.fontSizes = ['20%', '30%', '50%', '70%', '80%', '100%', '110%', '120%', '150%', '170%', '200%'];
-      this.addEditorTab('Options', _definitions2.default.plugin_path + 'editor.html', 2);
-      this.addEditorTab('Value Mappings', _definitions2.default.plugin_path + 'mappings.html', 3);
+      this.addEditorTab('Options', _definitions2.default.plugin_path + 'partials/editor.html', 2);
+      this.addEditorTab('Value Mappings', _definitions2.default.plugin_path + 'partials/mappings.html', 3);
       this.unitFormats = _kbn2.default.getUnitFormats();
     }
   }, {
@@ -478,7 +500,6 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
     key: 'link',
     value: function link(scope, elem, attrs, ctrl) {
       var $location = this.$location;
-      console.log($location);
       var linkSrv = this.linkSrv;
       var $timeout = this.$timeout;
       var panel = ctrl.panel;
@@ -815,5 +836,5 @@ exports.PanelCtrl = StatisticsCtrl;
 exports.getColorForValue = getColorForValue;
 
 
-StatisticsCtrl.templateUrl = 'module.html';
+StatisticsCtrl.templateUrl = 'partials/module.html';
 //# sourceMappingURL=module.js.map
