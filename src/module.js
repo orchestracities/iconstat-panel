@@ -711,11 +711,11 @@ class StatisticsCtrl extends MetricsPanelCtrl {
 
       elem.toggleClass('pointer', panel.links.length > 0);
 
-      if (panel.links.length > 0) {
-        linkInfo = linkSrv.getPanelLinkAnchorInfo(panel.links[0], data.scopedVars);
-      } else {
+      //if (panel.links.length > 0) {
+      //  linkInfo = linkSrv.getPanelLinkAnchorInfo(panel.links[0], data.scopedVars);
+      //} else {
         linkInfo = null;
-      }
+      //}
     }
 
     function hookupDrilldownLinkTooltip() {
