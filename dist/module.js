@@ -5,6 +5,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.getColorForValue = exports.PanelCtrl = exports.StatisticsCtrl = undefined;
 
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _lodash = require('lodash');
@@ -113,10 +115,15 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
       subtitle: 'NA',
       iconTypes: ['info-circle', 'save', 'editor', 'controller', 'exclamation-triangle', 'fighter-jet', 'file', 'home', 'inbox', 'leaf', 'map-marker', 'motorcycle', 'plane', 'recycle', 'taxi', 'subway', 'table', 'thermometer-half', 'tree', 'trash', 'truck', 'umbrella', 'volume-up'],
       iconType: '',
-      allowModify: false,
-      modalValue: ''
+      allowActuation: false
     };
-
+    _this.modal = {
+      allowedEntities: [],
+      allowedTypes: [],
+      entity: {},
+      type: {},
+      value: ''
+    };
     _lodash2.default.defaultsDeep(_this.panel, _this.panelDefaults);
 
     _this.events.on('data-received', _this.onDataReceived.bind(_this));
@@ -135,7 +142,14 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
   _createClass(StatisticsCtrl, [{
     key: 'showModal',
     value: function showModal() {
-      if (!this.panel.allowModify) return;
+      if (!this.panel.allowActuation) return;
+
+      var _processTargets = processTargets(this.panel.targets);
+
+      var _processTargets2 = _slicedToArray(_processTargets, 2);
+
+      this.modal.allowedEntities = _processTargets2[0];
+      this.modal.allowedTypes = _processTargets2[1];
 
       var modalScope = this.$scope.$new();
       modalScope.panel = this.panel;
@@ -149,18 +163,17 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
   }, {
     key: 'sendToRemote',
     value: function sendToRemote() {
-      console.log('Sending to remote...');
-
-      var url = _definitions2.default.remote_server.replace('<device_id>', document.querySelector('#form_device_id').value);
-      var data = { value: document.querySelector('#form_device_value').value };
-
+      var url = _definitions2.default.remote_server.replace('<device_id>', this.modal.entity.value);
+      var data = {};
+      data[this.modal.type.column] = this.modal.value;
+      console.log(url);
+      console.log(data);
       fetch(url, {
-        method: 'POST', // or 'PUT'
+        method: 'POST',
+        mode: 'cors', // no-cors, cors, *same-origin
         body: JSON.stringify(data), // data can be `string` or {object}!
         headers: new Headers(_definitions2.default.request_header)
-      })
-      //    .then((res) => res.json())
-      .then(function (response) {
+      }).then(function (response) {
         if (response.ok) {
           console.log('Success:', response);
           processResponse('success', 'Successfuly updated!');
@@ -169,8 +182,6 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
         console.log('Error:', error);
         processResponse('warning', error);
       });
-
-      //console.log(this.data)
 
       function processResponse(type, msg) {
         document.querySelector('.modal-content > .server-response').innerHTML = '<div class=\'alert alert-' + type + ' fade in alert-dismissible\'>' + msg + '</div>';
@@ -831,10 +842,42 @@ function getColorForValue(data, value) {
   return _lodash2.default.first(data.colorMap);
 }
 
+function processTargets(targets) {
+  var whereClauses = targets.map(function (elem) {
+    return elem.whereClauses.filter(function (elem) {
+      return elem.operator == "=";
+    });
+  }).map(function (elem) {
+    return elem.map(function (_ref) {
+      var column = _ref.column,
+          value = _ref.value;
+      return { column: column, value: value };
+    });
+  });
+  var metrics = targets.map(function (elem) {
+    return elem.metricAggs.filter(function (elem) {
+      return elem.type == 'raw';
+    });
+  }).map(function (elem) {
+    return elem.map(function (_ref2) {
+      var column = _ref2.column;
+      return { column: column };
+    });
+  });
+
+  var entities = whereClauses.length > 0 ? whereClauses[0].map(function (elem) {
+    return elem;
+  }) : [];
+  var fields = metrics.length > 0 ? metrics[0].map(function (elem) {
+    return elem;
+  }) : [];
+
+  return [entities, fields];
+}
+
+StatisticsCtrl.templateUrl = 'partials/module.html';
+
 exports.StatisticsCtrl = StatisticsCtrl;
 exports.PanelCtrl = StatisticsCtrl;
 exports.getColorForValue = getColorForValue;
-
-
-StatisticsCtrl.templateUrl = 'partials/module.html';
 //# sourceMappingURL=module.js.map

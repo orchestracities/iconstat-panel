@@ -86,10 +86,15 @@ class StatisticsCtrl extends MetricsPanelCtrl {
       'plane', 'recycle', 'taxi', 'subway', 'table', 'thermometer-half',
        'tree', 'trash', 'truck', 'umbrella', 'volume-up'],
       iconType: '',
-      allowModify: false,
-      modalValue:''
+      allowActuation: false,
     };
-
+    this.modal = {
+      allowedEntities: [],
+      allowedTypes: [],
+      entity: {},
+      type: {},
+      value: '',
+    }
     _.defaultsDeep(this.panel, this.panelDefaults);
 
     this.events.on('data-received', this.onDataReceived.bind(this));
@@ -105,9 +110,10 @@ class StatisticsCtrl extends MetricsPanelCtrl {
   }
 
   showModal() {
-    if(!this.panel.allowModify)
+    if(!this.panel.allowActuation)
       return ;
 
+    [this.modal.allowedEntities, this.modal.allowedTypes] = processTargets(this.panel.targets)
     var modalScope = this.$scope.$new();
     modalScope.panel = this.panel;
 
@@ -119,17 +125,17 @@ class StatisticsCtrl extends MetricsPanelCtrl {
   }
 
   sendToRemote() {
-    console.log('Sending to remote...')
-
-    let url = definitions.remote_server.replace('<device_id>', document.querySelector('#form_device_id').value);
-    let data = {value: document.querySelector('#form_device_value').value};
-
+    let url = definitions.remote_server.replace('<device_id>', this.modal.entity.value);
+    let data = {}
+    data[this.modal.type.column] = this.modal.value
+    console.log(url)
+    console.log(data)
     fetch(url, {
-      method: 'POST', // or 'PUT'
+      method: 'POST',
+      mode: 'cors', // no-cors, cors, *same-origin
       body: JSON.stringify(data), // data can be `string` or {object}!
       headers: new Headers(definitions.request_header)
     })
-//    .then((res) => res.json())
     .then((response) => {
       if(response.ok) {
         console.log('Success:', response)
@@ -142,12 +148,9 @@ class StatisticsCtrl extends MetricsPanelCtrl {
       processResponse('warning', error)
     })
 
-//console.log(this.data)
-
     function processResponse(type, msg) {
       document.querySelector('.modal-content > .server-response').innerHTML=`<div class='alert alert-${type} fade in alert-dismissible'>${msg}</div>`
     }
-
   }
 
   onInitEditMode() {
@@ -787,6 +790,21 @@ function getColorForValue(data, value) {
   return _.first(data.colorMap);
 }
 
-export { StatisticsCtrl, StatisticsCtrl as PanelCtrl, getColorForValue };
+function processTargets(targets) {
+  let whereClauses = targets
+    .map(elem => elem.whereClauses
+    .filter(elem=>elem.operator=="="))
+    .map(elem=>elem.map(({ column, value })=>({ column, value })))
+  let metrics = targets.map(elem=>elem.metricAggs
+    .filter(elem=>elem.type=='raw'))
+    .map(elem=>elem.map(({ column })=>({ column })))
+
+  let entities = whereClauses.length > 0 ? whereClauses[0].map(elem=>elem) : []
+  let fields = metrics.length > 0 ? metrics[0].map(elem=>elem) : []
+
+  return [entities, fields]
+}
 
 StatisticsCtrl.templateUrl = 'partials/module.html';
+
+export { StatisticsCtrl, StatisticsCtrl as PanelCtrl, getColorForValue };

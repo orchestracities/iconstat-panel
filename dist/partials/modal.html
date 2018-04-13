@@ -2,7 +2,7 @@
   <div class="modal-header">
     <h3 class="modal-header-title">
       <i class="fa fa-pencil"></i>
-      <span class="p-l-1">Modify Value</span>
+      <span class="p-l-1">Actuate</span>
     </h3>
     <a class="modal-header-close" ng-click="dismiss()"><i class="fa fa-remove"></i></a>
   </div>
@@ -10,23 +10,45 @@
   <div class="modal-content text-center">
     <div class="server-response"></div>
 
-    <!-- <div class="p-t-1 p-b-1"> -->
-      <form>
-        <div class="m-b-1 inline-block">
+    <form>
+      <div class="inline-block m-t-1">
+        <div class="m-b-1">
           <div>
-            <label>Device ID</label>
+            <label>Entity</label>
           </div>
           <div>
-            <input id="form_device_id" type="number" class="gf-form-input width-16" placeholder="Insert the Device ID" />
+            <select class="gf-form-input"
+              ng-model="ctrl.modal.entity"
+              ng-options="f.column for f in ctrl.modal.allowedEntities"
+              title="Select one option"
+              required>
+            </select>
+          </div>
+        </div>
+        <div class="m-b-1">
+          <div>
+            <label>Type</label>
+          </div>
+          <div>
+            <select class="gf-form-input"
+              ng-model="ctrl.modal.type"
+              ng-options="f.column for f in ctrl.modal.allowedTypes"
+              title="Select one option"
+              required>
+            </select>
           </div>
         </div>
 
-        <div class="m-b-1 inline-block">
+        <div class="m-b-1">
           <div>
             <label>Value</label>
           </div>
           <div>
-            <input id="form_device_value" type="text" class="gf-form-input width-16" placeholder="Insert the desired value" />
+            <input ng-init="ctrl.modal.value=ctrl.data.value"
+              ng-model="ctrl.modal.value" type="text"
+              class="gf-form-input width-16"
+              placeholder="Insert the desired value"
+              required />
           </div>
         </div>
 
@@ -36,7 +58,7 @@
             give-focus="true">Update</button>
           <button type="button" class="btn btn-inverse" ng-click="dismiss()">Cancel</button>
         </div>
-      </form>
-    <!-- </div> -->
+      </div>
+    </form>
   </div>
 </div>
