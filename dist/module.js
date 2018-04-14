@@ -19,6 +19,8 @@ var _jquery2 = _interopRequireDefault(_jquery);
 
 require('vendor/flot/jquery.flot.js');
 
+require('vendor/flot/jquery.flot.time.js');
+
 require('vendor/flot/jquery.flot.gauge.js');
 
 var _kbn = require('app/core/utils/kbn');

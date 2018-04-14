@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import $ from 'jquery';
 import 'vendor/flot/jquery.flot.js';
+import 'vendor/flot/jquery.flot.time.js';
 import 'vendor/flot/jquery.flot.gauge.js';
 //grafana specific
 import kbn from 'app/core/utils/kbn';
