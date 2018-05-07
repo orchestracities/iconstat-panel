@@ -3,7 +3,7 @@
 
     <div class="gf-form-inline">
       <div class="gf-form" ng-show="ctrl.dataType === 'timeseries'">
-        <label class="gf-form-label width-6">Stat</label>
+        <label class="gf-form-label width-10">Stat</label>
         <div class="gf-form-select-wrapper width-12">
           <select class="gf-form-input" ng-model="ctrl.panel.valueName" ng-options="f.value as f.text for f in ctrl.valueNameOptions" ng-change="ctrl.refresh()"></select>
         </div>
@@ -24,7 +24,7 @@
 
     <div class="gf-form-inline">
       <div class="gf-form">
-        <label class="gf-form-label width-6">Prefix</label>
+        <label class="gf-form-label width-10">Prefix</label>
         <input type="text" class="gf-form-input width-12" ng-model="ctrl.panel.prefix" ng-change="ctrl.render()" ng-model-onblur>
         <label class="gf-form-label width-6">Font size</label>
         <div class="gf-form-select-wrapper">
@@ -34,7 +34,7 @@
     </div>
 
     <div class="gf-form">
-      <label class="gf-form-label width-6">Postfix</label>
+      <label class="gf-form-label width-10">Postfix</label>
       <input type="text" class="gf-form-input width-12" ng-model="ctrl.panel.postfix" ng-change="ctrl.render()" ng-model-onblur>
       <label class="gf-form-label width-6">Font size</label>
       <div class="gf-form-select-wrapper">
@@ -46,25 +46,37 @@
         </select>
       </div>
     </div>
+
     <div class="gf-form">
-      <label class="gf-form-label width-6">Unit</label>
+      <label class="gf-form-label width-10">Unit</label>
       <div class="gf-form-dropdown-typeahead width-18"
         ng-model="ctrl.panel.format"
         dropdown-typeahead2="ctrl.unitFormats"
         dropdown-typeahead-on-select="ctrl.setUnitFormat($subItem)">
       </div>
     </div>
+
     <div class="gf-form">
-      <label class="gf-form-label width-6">Decimals</label>
-      <input type="number" class="gf-form-input width-18" placeholder="auto" data-placement="right" bs-tooltip="'Override automatic decimal precision for legend and tooltips'" ng-model="ctrl.panel.decimals" ng-change="ctrl.refresh()" ng-model-onblur>
+      <label class="gf-form-label width-10">Decimals</label>
+      <input type="number" class="gf-form-input width-18" placeholder="auto" data-placement="right"
+        bs-tooltip="'Override automatic decimal precision for legend and tooltips'" ng-model="ctrl.panel.decimals" ng-change="ctrl.refresh()" ng-model-onblur>
     </div>
 
-    <gf-form-switch class="gf-form"
-      label-class="width-18"
-      switch-class="max-width-6"
-      label="Allow Actuation?"
-      checked="ctrl.panel.allowActuation"
-      on-change="ctrl.render()"
-      >
-    </gf-form-switch>
+    <div class="gf-form">
+
+      <span class="gf-form-label width-10">Allow Actuation?
+        <info-popover mode="right-normal">
+          Allow to actuate over values. For this, user should click in the value.
+        </info-popover>
+      </span>
+
+      <gf-form-switch class="gf-form"
+        switch-class="max-width-6"
+        checked="ctrl.panel.allowActuation"
+        on-change="ctrl.render()"
+        >
+      </gf-form-switch>
+
+    </div>
+
   </div>

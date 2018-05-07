@@ -41,6 +41,14 @@ class StatisticsCtrl extends MetricsPanelCtrl {
         { value: 'last_time', text: 'Time of last point' },
     ];
 
+
+    this.iconTypesOptions = [
+      'none',
+      'info-circle', 'save', 'editor', 'controller', 'exclamation-triangle',
+      'fighter-jet', 'file', 'home', 'inbox', 'leaf', 'map-marker', 'motorcycle',
+      'plane', 'recycle', 'taxi', 'subway', 'table', 'thermometer-half',
+       'tree', 'trash', 'truck', 'umbrella', 'volume-up']
+
     // Set and populate defaults
     this.panelDefaults = {
       links: [],
@@ -81,11 +89,7 @@ class StatisticsCtrl extends MetricsPanelCtrl {
       },
       tableColumn: '',
       subtitle: 'NA',
-      iconTypes: [
-      'info-circle', 'save', 'editor', 'controller', 'exclamation-triangle',
-      'fighter-jet', 'file', 'home', 'inbox', 'leaf', 'map-marker', 'motorcycle',
-      'plane', 'recycle', 'taxi', 'subway', 'table', 'thermometer-half',
-       'tree', 'trash', 'truck', 'umbrella', 'volume-up'],
+
       iconType: '',
       allowActuation: false,
     };
@@ -95,6 +99,7 @@ class StatisticsCtrl extends MetricsPanelCtrl {
       entity: {},
       type: {},
       value: '',
+      valid: false
     }
     _.defaultsDeep(this.panel, this.panelDefaults);
 
@@ -125,7 +130,17 @@ class StatisticsCtrl extends MetricsPanelCtrl {
     });
   }
 
+  validFieldValues() {
+    return (this.modal.type.column!==undefined && this.modal.entity.value!==undefined && this.modal.value!==undefined && this.modal.value!=='')
+  }
+
   sendToRemote() {
+    this.modal.valid=this.validFieldValues()
+    if(!this.modal.valid) {
+      processResponse('warning', 'Please, choose or set all fields!')
+      return ;
+    }
+
     let url = definitions.remote_server.replace('<device_id>', this.modal.entity.value);
     let data = {}
     data[this.modal.type.column] = this.modal.value
@@ -697,10 +712,13 @@ class StatisticsCtrl extends MetricsPanelCtrl {
         elem.css('background-color', '');
       }
 
-      let title = '<div class="statistics-panel-title-container">'+
-                    '<span class="fa fa-'+panel.iconType+'"></span>'+
-                    '<span class="statistics-panel-title-content">'+panel.subtitle+'</span>'+
-                  '</div>';
+      let title = '<div class="statistics-panel-title-container">'
+
+      if(panel.iconType!=='none')
+        title += '<span class="fa fa-'+panel.iconType+'"></span>'
+
+      title += '<span class="statistics-panel-title-content">'+panel.subtitle+'</span>'
+      title += '</div>';
 
       elem.html(title);
       elem.append(body);

@@ -75,6 +75,8 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
 
     _this.valueNameOptions = [{ value: 'min', text: 'Min' }, { value: 'max', text: 'Max' }, { value: 'avg', text: 'Average' }, { value: 'current', text: 'Current' }, { value: 'total', text: 'Total' }, { value: 'name', text: 'Name' }, { value: 'first', text: 'First' }, { value: 'delta', text: 'Delta' }, { value: 'diff', text: 'Difference' }, { value: 'range', text: 'Range' }, { value: 'last_time', text: 'Time of last point' }];
 
+    _this.iconTypesOptions = ['none', 'info-circle', 'save', 'editor', 'controller', 'exclamation-triangle', 'fighter-jet', 'file', 'home', 'inbox', 'leaf', 'map-marker', 'motorcycle', 'plane', 'recycle', 'taxi', 'subway', 'table', 'thermometer-half', 'tree', 'trash', 'truck', 'umbrella', 'volume-up'];
+
     // Set and populate defaults
     _this.panelDefaults = {
       links: [],
@@ -115,7 +117,7 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
       },
       tableColumn: '',
       subtitle: 'NA',
-      iconTypes: ['info-circle', 'save', 'editor', 'controller', 'exclamation-triangle', 'fighter-jet', 'file', 'home', 'inbox', 'leaf', 'map-marker', 'motorcycle', 'plane', 'recycle', 'taxi', 'subway', 'table', 'thermometer-half', 'tree', 'trash', 'truck', 'umbrella', 'volume-up'],
+
       iconType: '',
       allowActuation: false
     };
@@ -124,7 +126,8 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
       allowedTypes: [],
       entity: {},
       type: {},
-      value: ''
+      value: '',
+      valid: false
     };
     _lodash2.default.defaultsDeep(_this.panel, _this.panelDefaults);
 
@@ -163,8 +166,20 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
       });
     }
   }, {
+    key: 'validFieldValues',
+    value: function validFieldValues() {
+      return this.modal.type.column !== undefined && this.modal.entity.value !== undefined && this.modal.value !== undefined && this.modal.value !== '';
+    }
+  }, {
     key: 'sendToRemote',
     value: function sendToRemote() {
+      this.modal.valid = this.validFieldValues();
+      console.log(this.modal.valid);
+      if (!this.modal.valid) {
+        processResponse('warning', 'Please, choose or set all fields!');
+        return;
+      }
+
       var url = _definitions2.default.remote_server.replace('<device_id>', this.modal.entity.value);
       var data = {};
       data[this.modal.type.column] = this.modal.value;
@@ -750,7 +765,12 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
           elem.css('background-color', '');
         }
 
-        var title = '<div class="statistics-panel-title-container">' + '<span class="fa fa-' + panel.iconType + '"></span>' + '<span class="statistics-panel-title-content">' + panel.subtitle + '</span>' + '</div>';
+        var title = '<div class="statistics-panel-title-container">';
+
+        if (panel.iconType !== 'none') title += '<span class="fa fa-' + panel.iconType + '"></span>';
+
+        title += '<span class="statistics-panel-title-content">' + panel.subtitle + '</span>';
+        title += '</div>';
 
         elem.html(title);
         elem.append(body);

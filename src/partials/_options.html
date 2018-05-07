@@ -11,9 +11,9 @@
     </span>
     <div class="gf-form-select-wrapper max-width-12">
       <select class="gf-form-input"
-        ng-init="ctrl.panel.iconType = (ctrl.panel.iconType ? ctrl.panel.iconType : ctrl.panel.iconTypes[0])"
+        ng-init="ctrl.panel.iconType = (ctrl.panel.iconType ? ctrl.panel.iconType : ctrl.iconTypesOptions[0])"
         ng-model="ctrl.panel.iconType"
-        ng-options="iconType for iconType in ctrl.panel.iconTypes"
+        ng-options="iconType for iconType in ctrl.iconTypesOptions"
         ng-change="ctrl.render()"
         required>
       </select>
