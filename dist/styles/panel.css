@@ -43,6 +43,11 @@
   padding-right: 20px;
 }
 
+.statistics-panel-trendIndicator {
+  /*font-size: 60px;*/
+  margin-left: 20px;
+}
+
 /*#flotGagueValue0 {
   font-weight: bold;
 }

@@ -24,6 +24,7 @@ class StatisticsCtrl extends MetricsPanelCtrl {
     this.series = [];
     this.data = [];
     this.fontSizes = [];
+    this.fontSizesInt = [];
     this.unitFormats = [];
     this.invalidGaugeRange = false;
 
@@ -40,7 +41,6 @@ class StatisticsCtrl extends MetricsPanelCtrl {
         { value: 'range', text: 'Range' },
         { value: 'last_time', text: 'Time of last point' },
     ];
-
 
     this.iconTypesOptions = [
       'none',
@@ -87,21 +87,20 @@ class StatisticsCtrl extends MetricsPanelCtrl {
         thresholdMarkers: true,
         thresholdLabels: false,
       },
+      trendIndicator: {
+        show: false,
+        size: 30
+      },
       tableColumn: '',
       subtitle: 'NA',
 
       iconType: '',
       allowActuation: false,
     };
-    this.modal = {
-      allowedEntities: [],
-      allowedTypes: [],
-      entity: {},
-      type: {},
-      value: '',
-      valid: false
-    }
+
     _.defaultsDeep(this.panel, this.panelDefaults);
+
+    this.initModalValues();
 
     this.events.on('data-received', this.onDataReceived.bind(this));
     this.events.on('data-error', this.onDataError.bind(this));
@@ -115,12 +114,24 @@ class StatisticsCtrl extends MetricsPanelCtrl {
     this.handleSendToRemote = this.sendToRemote.bind(this);
   }
 
+  initModalValues() {
+    this.modal = {
+      allowedEntities: [],
+      allowedTypes: [],
+      entity: {},
+      type: {},
+      value: '',
+      valid: false
+    }
+  }
   showModal() {
     if(!this.panel.allowActuation)
       return ;
 
+    this.initModalValues();
+
     [this.modal.allowedEntities, this.modal.allowedTypes] = processTargets(this.panel.targets)
-    var modalScope = this.$scope.$new();
+    let modalScope = this.$scope.$new();
     modalScope.panel = this.panel;
 
     this.publishAppEvent('show-modal', {
@@ -171,6 +182,7 @@ class StatisticsCtrl extends MetricsPanelCtrl {
 
   onInitEditMode() {
     this.fontSizes = ['20%', '30%', '50%', '70%', '80%', '100%', '110%', '120%', '150%', '170%', '200%'];
+    this.fontSizesInt = [10, 30, 50, 70, 80, 100, 110, 120];
     this.addEditorTab('Options', `${definitions.plugin_path}partials/editor.html`, 2);
     this.addEditorTab('Value Mappings', `${definitions.plugin_path}partials/mappings.html`, 3);
     this.unitFormats = kbn.getUnitFormats();
@@ -197,6 +209,7 @@ class StatisticsCtrl extends MetricsPanelCtrl {
       this.setValues(data);
     }
     this.data = data;
+    console.debug(this.data)
     this.render();
   }
 
@@ -474,13 +487,14 @@ class StatisticsCtrl extends MetricsPanelCtrl {
   }
 
   link(scope, elem, attrs, ctrl) {
-    var $location = this.$location;
-    var linkSrv = this.linkSrv;
-    var $timeout = this.$timeout;
-    var panel = ctrl.panel;
-    var templateSrv = this.templateSrv;
-    var data, linkInfo;
-    var $panelContainer = elem.find('.panel-container');
+    let $location = this.$location;
+    let linkSrv = this.linkSrv;
+    let $timeout = this.$timeout;
+    let panel = ctrl.panel;
+    let templateSrv = this.templateSrv;
+    let data, linkInfo;
+
+    let $panelContainer = elem.find('.panel-container');
     elem = elem.find('.statistics-panel');
 
     function applyColoringThresholds(value, valueString) {
@@ -496,9 +510,28 @@ class StatisticsCtrl extends MetricsPanelCtrl {
       return valueString;
     }
 
-    function getSpan(className, fontSize, value) {
-      value = templateSrv.replace(value, data.scopedVars);
-      return '<span class="' + className + '" style="font-size:' + fontSize + '">' + value + '</span>';
+    function getSpan(className, fontSize, content) {
+      content = templateSrv.replace(content, data.scopedVars);
+      let spanContent = '<span class="' + className;
+      if(fontSize)
+        spanContent += '" style="font-size:' + fontSize;
+
+      spanContent += '">' + content + '</span>';
+      return spanContent;
+    }
+
+    function getTrendIndicator() {
+      let trendIndicatorValue = data.flotpairs[0][1]-data.flotpairs[data.flotpairs.length-1][1]
+      let icon;
+
+      if(trendIndicatorValue<0)
+        icon = 'fa-arrow-down';
+      else if(trendIndicatorValue>0)
+        icon = 'fa-arrow-up';
+      else
+        icon = 'fa-arrow-right';
+
+      return `<span><i class="fa ${icon}"></i></span>`;
     }
 
     function getBigValueHtml() {
@@ -515,6 +548,10 @@ class StatisticsCtrl extends MetricsPanelCtrl {
       if (panel.postfix) {
         var postfix = applyColoringThresholds(data.value, panel.postfix);
         body += getSpan('statistics-panel-postfix', panel.postfixFontSize, postfix);
+      }
+
+      if (panel.trendIndicator.show) {
+        body += getSpan('statistics-panel-trendIndicator', `${panel.trendIndicator.size}px`, getTrendIndicator());
       }
 
       body += '</div></div>';
@@ -683,20 +720,19 @@ class StatisticsCtrl extends MetricsPanelCtrl {
       $.plot(plotCanvas, [plotSeries], options);
     }
 
-    function render() {
-      if (!ctrl.data) {
-        return;
-      }
-      data = ctrl.data;
+    function getTitle() {
+      let title = '<div class="statistics-panel-title-container">'
 
-      // get thresholds
-      data.thresholds = panel.thresholds.split(',').map(function(strVale) {
-        return Number(strVale.trim());
-      });
-      data.colorMap = panel.colors;
+      if(panel.iconType!=='none')
+        title += '<span class="fa fa-'+panel.iconType+'"></span>'
 
-      var body = panel.gauge.show ? '' : getBigValueHtml();
+      title += '<span class="statistics-panel-title-content">'+panel.subtitle+'</span>'
+      title += '</div>';
 
+      return title;
+    }
+
+    function setPanelBackground() {
       if (panel.colorBackground) {
         var color = getColorForValue(data, data.value);
         if (color) {
@@ -711,16 +747,26 @@ class StatisticsCtrl extends MetricsPanelCtrl {
         $panelContainer.css('background-color', '');
         elem.css('background-color', '');
       }
+    }
 
-      let title = '<div class="statistics-panel-title-container">'
+    function render() {
 
-      if(panel.iconType!=='none')
-        title += '<span class="fa fa-'+panel.iconType+'"></span>'
+      elem.html(getTitle());
 
-      title += '<span class="statistics-panel-title-content">'+panel.subtitle+'</span>'
-      title += '</div>';
+      if (!ctrl.data) {
+        return;
+      }
+      data = ctrl.data;
 
-      elem.html(title);
+      // get thresholds
+      data.thresholds = panel.thresholds.split(',').map(function(strVale) {
+        return Number(strVale.trim());
+      });
+      data.colorMap = panel.colors;
+
+      setPanelBackground();
+
+      var body = panel.gauge.show ? '' : getBigValueHtml();
       elem.append(body);
 
       if (panel.sparkline.show) {
