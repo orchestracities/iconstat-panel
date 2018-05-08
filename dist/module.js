@@ -118,7 +118,7 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
       },
       trendIndicator: {
         show: false,
-        size: 20
+        size: 30
       },
       tableColumn: '',
       subtitle: 'NA',
@@ -196,8 +196,8 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
       var url = _definitions2.default.remote_server.replace('<device_id>', this.modal.entity.value);
       var data = {};
       data[this.modal.type.column] = this.modal.value;
-      console.log(url);
-      console.log(data);
+      console.info(url);
+      console.info(data);
       fetch(url, {
         method: 'POST',
         mode: 'cors', // no-cors, cors, *same-origin
@@ -205,11 +205,11 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
         headers: new Headers(_definitions2.default.request_header)
       }).then(function (response) {
         if (response.ok) {
-          console.log('Success:', response);
+          console.info('Success:', response);
           processResponse('success', 'Successfuly updated!');
         } else processResponse('warning', 'Error updating!');
       }).catch(function (error) {
-        console.log('Error:', error);
+        console.warn('Error:', error);
         processResponse('warning', error);
       });
 
@@ -576,8 +576,11 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
       }
 
       function getTrendIndicator() {
-        var trendIndicatorValue = data.flotpairs[0][1] - data.flotpairs[data.flotpairs.length - 1][1];
+        console.debug('first value: ' + data.flotpairs[0][1] + ', last value: ' + data.flotpairs[data.flotpairs.length - 1][1]);
+        var trendIndicatorValue = data.flotpairs[data.flotpairs.length - 1][1] - data.flotpairs[0][1];
         var icon = void 0;
+
+        console.debug('trendIndicatorValue: ' + trendIndicatorValue);
 
         if (trendIndicatorValue < 0) icon = 'fa-arrow-down';else if (trendIndicatorValue > 0) icon = 'fa-arrow-up';else icon = 'fa-arrow-right';
 

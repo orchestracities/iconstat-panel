@@ -155,8 +155,8 @@ class StatisticsCtrl extends MetricsPanelCtrl {
     let url = definitions.remote_server.replace('<device_id>', this.modal.entity.value);
     let data = {}
     data[this.modal.type.column] = this.modal.value
-    console.log(url)
-    console.log(data)
+    console.info(url)
+    console.info(data)
     fetch(url, {
       method: 'POST',
       mode: 'cors', // no-cors, cors, *same-origin
@@ -165,13 +165,13 @@ class StatisticsCtrl extends MetricsPanelCtrl {
     })
     .then((response) => {
       if(response.ok) {
-        console.log('Success:', response)
+        console.info('Success:', response)
         processResponse('success', 'Successfuly updated!')
       } else
         processResponse('warning', 'Error updating!')
     })
     .catch((error) => {
-      console.log('Error:', error)
+      console.warn('Error:', error)
       processResponse('warning', error)
     })
 
@@ -521,8 +521,11 @@ class StatisticsCtrl extends MetricsPanelCtrl {
     }
 
     function getTrendIndicator() {
-      let trendIndicatorValue = data.flotpairs[0][1]-data.flotpairs[data.flotpairs.length-1][1]
+      console.debug(`first value: ${data.flotpairs[0][1]}, last value: ${data.flotpairs[data.flotpairs.length-1][1]}`)
+      let trendIndicatorValue = data.flotpairs[data.flotpairs.length-1][1]-data.flotpairs[0][1]
       let icon;
+
+      console.debug(`trendIndicatorValue: ${trendIndicatorValue}`)
 
       if(trendIndicatorValue<0)
         icon = 'fa-arrow-down';
