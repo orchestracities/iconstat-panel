@@ -3,7 +3,9 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getColorForValue = exports.PanelCtrl = exports.StatisticsCtrl = exports.PLUGIN_PATH = undefined;
+exports.getColorForValue = exports.PanelCtrl = exports.StatisticsCtrl = undefined;
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -16,6 +18,8 @@ var _jquery = require('jquery');
 var _jquery2 = _interopRequireDefault(_jquery);
 
 require('vendor/flot/jquery.flot.js');
+
+require('vendor/flot/jquery.flot.time.js');
 
 require('vendor/flot/jquery.flot.gauge.js');
 
@@ -33,6 +37,10 @@ var _time_series2 = _interopRequireDefault(_time_series);
 
 var _sdk = require('app/plugins/sdk');
 
+var _definitions = require('./definitions');
+
+var _definitions2 = _interopRequireDefault(_definitions);
+
 require('./styles/panel.css!');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -42,9 +50,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-//import 'app/features/panellinks/link_srv';
+//grafana specific
 
-var PLUGIN_PATH = exports.PLUGIN_PATH = 'public/plugins/statistics-panel/';
+//plugin specific
+
 
 var StatisticsCtrl = function (_MetricsPanelCtrl) {
   _inherits(StatisticsCtrl, _MetricsPanelCtrl);
@@ -55,14 +64,19 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
 
     var _this = _possibleConstructorReturn(this, (StatisticsCtrl.__proto__ || Object.getPrototypeOf(StatisticsCtrl)).call(this, $scope, $injector));
 
+    _this.remote_server = _definitions2.default.remote_server;
+    _this.base_path = _definitions2.default.plugin_path;
     _this.dataType = 'timeseries';
     _this.series = [];
     _this.data = [];
     _this.fontSizes = [];
+    _this.fontSizesInt = [];
     _this.unitFormats = [];
     _this.invalidGaugeRange = false;
 
     _this.valueNameOptions = [{ value: 'min', text: 'Min' }, { value: 'max', text: 'Max' }, { value: 'avg', text: 'Average' }, { value: 'current', text: 'Current' }, { value: 'total', text: 'Total' }, { value: 'name', text: 'Name' }, { value: 'first', text: 'First' }, { value: 'delta', text: 'Delta' }, { value: 'diff', text: 'Difference' }, { value: 'range', text: 'Range' }, { value: 'last_time', text: 'Time of last point' }];
+
+    _this.iconTypesOptions = ['none', 'info-circle', 'save', 'editor', 'controller', 'exclamation-triangle', 'fighter-jet', 'file', 'home', 'inbox', 'leaf', 'map-marker', 'motorcycle', 'plane', 'recycle', 'taxi', 'subway', 'table', 'thermometer-half', 'tree', 'trash', 'truck', 'umbrella', 'volume-up'];
 
     // Set and populate defaults
     _this.panelDefaults = {
@@ -102,13 +116,20 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
         thresholdMarkers: true,
         thresholdLabels: false
       },
+      trendIndicator: {
+        show: false,
+        size: 30
+      },
       tableColumn: '',
       subtitle: 'NA',
-      iconTypes: ['info-circle', 'save', 'editor', 'controller', 'exclamation-triangle', 'fighter-jet', 'file', 'home', 'inbox', 'leaf', 'map-marker', 'motorcycle', 'plane', 'recycle', 'taxi', 'subway', 'table', 'thermometer-half', 'tree', 'trash', 'truck', 'umbrella', 'volume-up'],
-      iconType: ''
+
+      iconType: '',
+      allowActuation: false
     };
 
     _lodash2.default.defaultsDeep(_this.panel, _this.panelDefaults);
+
+    _this.initModalValues();
 
     _this.events.on('data-received', _this.onDataReceived.bind(_this));
     _this.events.on('data-error', _this.onDataError.bind(_this));
@@ -117,15 +138,92 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
 
     _this.onSparklineColorChange = _this.onSparklineColorChange.bind(_this);
     _this.onSparklineFillChange = _this.onSparklineFillChange.bind(_this);
+
+    _this.handleClickPanel = _this.showModal.bind(_this);
+    _this.handleSendToRemote = _this.sendToRemote.bind(_this);
     return _this;
   }
 
   _createClass(StatisticsCtrl, [{
+    key: 'initModalValues',
+    value: function initModalValues() {
+      this.modal = {
+        allowedEntities: [],
+        allowedTypes: [],
+        entity: {},
+        type: {},
+        value: '',
+        valid: false
+      };
+    }
+  }, {
+    key: 'showModal',
+    value: function showModal() {
+      if (!this.panel.allowActuation) return;
+
+      this.initModalValues();
+
+      var _processTargets = processTargets(this.panel.targets);
+
+      var _processTargets2 = _slicedToArray(_processTargets, 2);
+
+      this.modal.allowedEntities = _processTargets2[0];
+      this.modal.allowedTypes = _processTargets2[1];
+
+      var modalScope = this.$scope.$new();
+      modalScope.panel = this.panel;
+
+      this.publishAppEvent('show-modal', {
+        src: this.base_path + 'partials/modal.html',
+        modalClass: 'confirm-modal',
+        scope: modalScope
+      });
+    }
+  }, {
+    key: 'validFieldValues',
+    value: function validFieldValues() {
+      return this.modal.type.column !== undefined && this.modal.entity.value !== undefined && this.modal.value !== undefined && this.modal.value !== '';
+    }
+  }, {
+    key: 'sendToRemote',
+    value: function sendToRemote() {
+      this.modal.valid = this.validFieldValues();
+      if (!this.modal.valid) {
+        processResponse('warning', 'Please, choose or set all fields!');
+        return;
+      }
+
+      var url = _definitions2.default.remote_server.replace('<device_id>', this.modal.entity.value);
+      var data = {};
+      data[this.modal.type.column] = this.modal.value;
+      console.info(url);
+      console.info(data);
+      fetch(url, {
+        method: 'POST',
+        mode: 'cors', // no-cors, cors, *same-origin
+        body: JSON.stringify(data), // data can be `string` or {object}!
+        headers: new Headers(_definitions2.default.request_header)
+      }).then(function (response) {
+        if (response.ok) {
+          console.info('Success:', response);
+          processResponse('success', 'Successfuly updated!');
+        } else processResponse('warning', 'Error updating!');
+      }).catch(function (error) {
+        console.warn('Error:', error);
+        processResponse('warning', error);
+      });
+
+      function processResponse(type, msg) {
+        document.querySelector('.modal-content > .server-response').innerHTML = '<div class=\'alert alert-' + type + ' fade in alert-dismissible\'>' + msg + '</div>';
+      }
+    }
+  }, {
     key: 'onInitEditMode',
     value: function onInitEditMode() {
       this.fontSizes = ['20%', '30%', '50%', '70%', '80%', '100%', '110%', '120%', '150%', '170%', '200%'];
-      this.addEditorTab('Options', PLUGIN_PATH + 'editor.html', 2);
-      this.addEditorTab('Value Mappings', PLUGIN_PATH + 'mappings.html', 3);
+      this.fontSizesInt = [10, 30, 50, 70, 80, 100, 110, 120];
+      this.addEditorTab('Options', _definitions2.default.plugin_path + 'partials/editor.html', 2);
+      this.addEditorTab('Value Mappings', _definitions2.default.plugin_path + 'partials/mappings.html', 3);
       this.unitFormats = _kbn2.default.getUnitFormats();
     }
   }, {
@@ -153,6 +251,7 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
         this.setValues(data);
       }
       this.data = data;
+      console.debug(this.data);
       this.render();
     }
   }, {
@@ -448,7 +547,9 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
       var $timeout = this.$timeout;
       var panel = ctrl.panel;
       var templateSrv = this.templateSrv;
-      var data, linkInfo;
+      var data = void 0,
+          linkInfo = void 0;
+
       var $panelContainer = elem.find('.panel-container');
       elem = elem.find('.statistics-panel');
 
@@ -465,9 +566,25 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
         return valueString;
       }
 
-      function getSpan(className, fontSize, value) {
-        value = templateSrv.replace(value, data.scopedVars);
-        return '<span class="' + className + '" style="font-size:' + fontSize + '">' + value + '</span>';
+      function getSpan(className, fontSize, content) {
+        content = templateSrv.replace(content, data.scopedVars);
+        var spanContent = '<span class="' + className;
+        if (fontSize) spanContent += '" style="font-size:' + fontSize;
+
+        spanContent += '">' + content + '</span>';
+        return spanContent;
+      }
+
+      function getTrendIndicator() {
+        console.debug('first value: ' + data.flotpairs[0][1] + ', last value: ' + data.flotpairs[data.flotpairs.length - 1][1]);
+        var trendIndicatorValue = data.flotpairs[data.flotpairs.length - 1][1] - data.flotpairs[0][1];
+        var icon = void 0;
+
+        console.debug('trendIndicatorValue: ' + trendIndicatorValue);
+
+        if (trendIndicatorValue < 0) icon = 'fa-arrow-down';else if (trendIndicatorValue > 0) icon = 'fa-arrow-up';else icon = 'fa-arrow-right';
+
+        return '<span><i class="fa ' + icon + '"></i></span>';
       }
 
       function getBigValueHtml() {
@@ -484,6 +601,10 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
         if (panel.postfix) {
           var postfix = applyColoringThresholds(data.value, panel.postfix);
           body += getSpan('statistics-panel-postfix', panel.postfixFontSize, postfix);
+        }
+
+        if (panel.trendIndicator.show) {
+          body += getSpan('statistics-panel-trendIndicator', panel.trendIndicator.size + 'px', getTrendIndicator());
         }
 
         body += '</div></div>';
@@ -652,20 +773,18 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
         _jquery2.default.plot(plotCanvas, [plotSeries], options);
       }
 
-      function render() {
-        if (!ctrl.data) {
-          return;
-        }
-        data = ctrl.data;
+      function getTitle() {
+        var title = '<div class="statistics-panel-title-container">';
 
-        // get thresholds
-        data.thresholds = panel.thresholds.split(',').map(function (strVale) {
-          return Number(strVale.trim());
-        });
-        data.colorMap = panel.colors;
+        if (panel.iconType !== 'none') title += '<span class="fa fa-' + panel.iconType + '"></span>';
 
-        var body = panel.gauge.show ? '' : getBigValueHtml();
+        title += '<span class="statistics-panel-title-content">' + panel.subtitle + '</span>';
+        title += '</div>';
 
+        return title;
+      }
+
+      function setPanelBackground() {
         if (panel.colorBackground) {
           var color = getColorForValue(data, data.value);
           if (color) {
@@ -680,10 +799,26 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
           $panelContainer.css('background-color', '');
           elem.css('background-color', '');
         }
+      }
 
-        var title = '<div class="statistics-panel-title-container">' + '<span class="fa fa-' + panel.iconType + '"></span>' + '<span class="statistics-panel-title-content">' + panel.subtitle + '</span>' + '</div>';
+      function render() {
 
-        elem.html(title);
+        elem.html(getTitle());
+
+        if (!ctrl.data) {
+          return;
+        }
+        data = ctrl.data;
+
+        // get thresholds
+        data.thresholds = panel.thresholds.split(',').map(function (strVale) {
+          return Number(strVale.trim());
+        });
+        data.colorMap = panel.colors;
+
+        setPanelBackground();
+
+        var body = panel.gauge.show ? '' : getBigValueHtml();
         elem.append(body);
 
         if (panel.sparkline.show) {
@@ -696,12 +831,11 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
 
         elem.toggleClass('pointer', panel.links.length > 0);
 
-        /*if (panel.links.length > 0) {
-          linkInfo = linkSrv.getPanelLinkAnchorInfo(panel.links[0], data.scopedVars);
-        } else {
-          linkInfo = null;
-        }*/
+        //if (panel.links.length > 0) {
+        //  linkInfo = linkSrv.getPanelLinkAnchorInfo(panel.links[0], data.scopedVars);
+        //} else {
         linkInfo = null;
+        //}
       }
 
       function hookupDrilldownLinkTooltip() {
@@ -776,10 +910,42 @@ function getColorForValue(data, value) {
   return _lodash2.default.first(data.colorMap);
 }
 
+function processTargets(targets) {
+  var whereClauses = targets.map(function (elem) {
+    return elem.whereClauses.filter(function (elem) {
+      return elem.operator == "=";
+    });
+  }).map(function (elem) {
+    return elem.map(function (_ref) {
+      var column = _ref.column,
+          value = _ref.value;
+      return { column: column, value: value };
+    });
+  });
+  var metrics = targets.map(function (elem) {
+    return elem.metricAggs.filter(function (elem) {
+      return elem.type == 'raw';
+    });
+  }).map(function (elem) {
+    return elem.map(function (_ref2) {
+      var column = _ref2.column;
+      return { column: column };
+    });
+  });
+
+  var entities = whereClauses.length > 0 ? whereClauses[0].map(function (elem) {
+    return elem;
+  }) : [];
+  var fields = metrics.length > 0 ? metrics[0].map(function (elem) {
+    return elem;
+  }) : [];
+
+  return [entities, fields];
+}
+
+StatisticsCtrl.templateUrl = 'partials/module.html';
+
 exports.StatisticsCtrl = StatisticsCtrl;
 exports.PanelCtrl = StatisticsCtrl;
 exports.getColorForValue = getColorForValue;
-
-
-StatisticsCtrl.templateUrl = 'module.html';
 //# sourceMappingURL=module.js.map
