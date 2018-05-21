@@ -1,17 +1,16 @@
 import _ from 'lodash';
 import $ from 'jquery';
 import 'vendor/flot/jquery.flot.js';
+import 'vendor/flot/jquery.flot.time.js';
 import 'vendor/flot/jquery.flot.gauge.js';
-//import 'app/features/panellinks/link_srv';
-
+//grafana specific
 import kbn from 'app/core/utils/kbn';
 import config from 'app/core/config';
 import TimeSeries from 'app/core/time_series2';
 import { MetricsPanelCtrl } from 'app/plugins/sdk';
-
+//plugin specific
+import definitions from './definitions';
 import './styles/panel.css!';
-
-export const PLUGIN_PATH = 'public/plugins/statistics-panel/'
 
 class StatisticsCtrl extends MetricsPanelCtrl {
 
@@ -19,10 +18,13 @@ class StatisticsCtrl extends MetricsPanelCtrl {
   constructor($scope, $injector, $location, linkSrv) {
     super($scope, $injector);
 
+    this.remote_server = definitions.remote_server;
+    this.base_path = definitions.plugin_path;
     this.dataType = 'timeseries';
     this.series = [];
     this.data = [];
     this.fontSizes = [];
+    this.fontSizesInt = [];
     this.unitFormats = [];
     this.invalidGaugeRange = false;
 
@@ -39,6 +41,13 @@ class StatisticsCtrl extends MetricsPanelCtrl {
         { value: 'range', text: 'Range' },
         { value: 'last_time', text: 'Time of last point' },
     ];
+
+    this.iconTypesOptions = [
+      'none',
+      'info-circle', 'save', 'editor', 'controller', 'exclamation-triangle',
+      'fighter-jet', 'file', 'home', 'inbox', 'leaf', 'map-marker', 'motorcycle',
+      'plane', 'recycle', 'taxi', 'subway', 'table', 'thermometer-half',
+       'tree', 'trash', 'truck', 'umbrella', 'volume-up']
 
     // Set and populate defaults
     this.panelDefaults = {
@@ -78,17 +87,20 @@ class StatisticsCtrl extends MetricsPanelCtrl {
         thresholdMarkers: true,
         thresholdLabels: false,
       },
+      trendIndicator: {
+        show: false,
+        size: 30
+      },
       tableColumn: '',
       subtitle: 'NA',
-      iconTypes: [
-      'info-circle', 'save', 'editor', 'controller', 'exclamation-triangle',
-      'fighter-jet', 'file', 'home', 'inbox', 'leaf', 'map-marker', 'motorcycle',
-      'plane', 'recycle', 'taxi', 'subway', 'table', 'thermometer-half',
-       'tree', 'trash', 'truck', 'umbrella', 'volume-up'],
-      iconType: ''
+
+      iconType: '',
+      allowActuation: false,
     };
 
     _.defaultsDeep(this.panel, this.panelDefaults);
+
+    this.initModalValues();
 
     this.events.on('data-received', this.onDataReceived.bind(this));
     this.events.on('data-error', this.onDataError.bind(this));
@@ -97,12 +109,82 @@ class StatisticsCtrl extends MetricsPanelCtrl {
 
     this.onSparklineColorChange = this.onSparklineColorChange.bind(this);
     this.onSparklineFillChange = this.onSparklineFillChange.bind(this);
+
+    this.handleClickPanel = this.showModal.bind(this);
+    this.handleSendToRemote = this.sendToRemote.bind(this);
+  }
+
+  initModalValues() {
+    this.modal = {
+      allowedEntities: [],
+      allowedTypes: [],
+      entity: {},
+      type: {},
+      value: '',
+      valid: false
+    }
+  }
+  showModal() {
+    if(!this.panel.allowActuation)
+      return ;
+
+    this.initModalValues();
+
+    [this.modal.allowedEntities, this.modal.allowedTypes] = processTargets(this.panel.targets)
+    let modalScope = this.$scope.$new();
+    modalScope.panel = this.panel;
+
+    this.publishAppEvent('show-modal', {
+      src: this.base_path+'partials/modal.html',
+      modalClass: 'confirm-modal',
+      scope: modalScope,
+    });
+  }
+
+  validFieldValues() {
+    return (this.modal.type.column!==undefined && this.modal.entity.value!==undefined && this.modal.value!==undefined && this.modal.value!=='')
+  }
+
+  sendToRemote() {
+    this.modal.valid=this.validFieldValues()
+    if(!this.modal.valid) {
+      processResponse('warning', 'Please, choose or set all fields!')
+      return ;
+    }
+
+    let url = definitions.remote_server.replace('<device_id>', this.modal.entity.value);
+    let data = {}
+    data[this.modal.type.column] = this.modal.value
+    console.info(url)
+    console.info(data)
+    fetch(url, {
+      method: 'POST',
+      mode: 'cors', // no-cors, cors, *same-origin
+      body: JSON.stringify(data), // data can be `string` or {object}!
+      headers: new Headers(definitions.request_header)
+    })
+    .then((response) => {
+      if(response.ok) {
+        console.info('Success:', response)
+        processResponse('success', 'Successfuly updated!')
+      } else
+        processResponse('warning', 'Error updating!')
+    })
+    .catch((error) => {
+      console.warn('Error:', error)
+      processResponse('warning', error)
+    })
+
+    function processResponse(type, msg) {
+      document.querySelector('.modal-content > .server-response').innerHTML=`<div class='alert alert-${type} fade in alert-dismissible'>${msg}</div>`
+    }
   }
 
   onInitEditMode() {
     this.fontSizes = ['20%', '30%', '50%', '70%', '80%', '100%', '110%', '120%', '150%', '170%', '200%'];
-    this.addEditorTab('Options', `${PLUGIN_PATH}editor.html`, 2);
-    this.addEditorTab('Value Mappings', `${PLUGIN_PATH}mappings.html`, 3);
+    this.fontSizesInt = [10, 30, 50, 70, 80, 100, 110, 120];
+    this.addEditorTab('Options', `${definitions.plugin_path}partials/editor.html`, 2);
+    this.addEditorTab('Value Mappings', `${definitions.plugin_path}partials/mappings.html`, 3);
     this.unitFormats = kbn.getUnitFormats();
   }
 
@@ -127,6 +209,7 @@ class StatisticsCtrl extends MetricsPanelCtrl {
       this.setValues(data);
     }
     this.data = data;
+    console.debug(this.data)
     this.render();
   }
 
@@ -404,13 +487,14 @@ class StatisticsCtrl extends MetricsPanelCtrl {
   }
 
   link(scope, elem, attrs, ctrl) {
-    var $location = this.$location;
-    var linkSrv = this.linkSrv;
-    var $timeout = this.$timeout;
-    var panel = ctrl.panel;
-    var templateSrv = this.templateSrv;
-    var data, linkInfo;
-    var $panelContainer = elem.find('.panel-container');
+    let $location = this.$location;
+    let linkSrv = this.linkSrv;
+    let $timeout = this.$timeout;
+    let panel = ctrl.panel;
+    let templateSrv = this.templateSrv;
+    let data, linkInfo;
+
+    let $panelContainer = elem.find('.panel-container');
     elem = elem.find('.statistics-panel');
 
     function applyColoringThresholds(value, valueString) {
@@ -426,9 +510,31 @@ class StatisticsCtrl extends MetricsPanelCtrl {
       return valueString;
     }
 
-    function getSpan(className, fontSize, value) {
-      value = templateSrv.replace(value, data.scopedVars);
-      return '<span class="' + className + '" style="font-size:' + fontSize + '">' + value + '</span>';
+    function getSpan(className, fontSize, content) {
+      content = templateSrv.replace(content, data.scopedVars);
+      let spanContent = '<span class="' + className;
+      if(fontSize)
+        spanContent += '" style="font-size:' + fontSize;
+
+      spanContent += '">' + content + '</span>';
+      return spanContent;
+    }
+
+    function getTrendIndicator() {
+      console.debug(`first value: ${data.flotpairs[0][1]}, last value: ${data.flotpairs[data.flotpairs.length-1][1]}`)
+      let trendIndicatorValue = data.flotpairs[data.flotpairs.length-1][1]-data.flotpairs[0][1]
+      let icon;
+
+      console.debug(`trendIndicatorValue: ${trendIndicatorValue}`)
+
+      if(trendIndicatorValue<0)
+        icon = 'fa-arrow-down';
+      else if(trendIndicatorValue>0)
+        icon = 'fa-arrow-up';
+      else
+        icon = 'fa-arrow-right';
+
+      return `<span><i class="fa ${icon}"></i></span>`;
     }
 
     function getBigValueHtml() {
@@ -445,6 +551,10 @@ class StatisticsCtrl extends MetricsPanelCtrl {
       if (panel.postfix) {
         var postfix = applyColoringThresholds(data.value, panel.postfix);
         body += getSpan('statistics-panel-postfix', panel.postfixFontSize, postfix);
+      }
+
+      if (panel.trendIndicator.show) {
+        body += getSpan('statistics-panel-trendIndicator', `${panel.trendIndicator.size}px`, getTrendIndicator());
       }
 
       body += '</div></div>';
@@ -613,20 +723,19 @@ class StatisticsCtrl extends MetricsPanelCtrl {
       $.plot(plotCanvas, [plotSeries], options);
     }
 
-    function render() {
-      if (!ctrl.data) {
-        return;
-      }
-      data = ctrl.data;
+    function getTitle() {
+      let title = '<div class="statistics-panel-title-container">'
 
-      // get thresholds
-      data.thresholds = panel.thresholds.split(',').map(function(strVale) {
-        return Number(strVale.trim());
-      });
-      data.colorMap = panel.colors;
+      if(panel.iconType!=='none')
+        title += '<span class="fa fa-'+panel.iconType+'"></span>'
 
-      var body = panel.gauge.show ? '' : getBigValueHtml();
+      title += '<span class="statistics-panel-title-content">'+panel.subtitle+'</span>'
+      title += '</div>';
 
+      return title;
+    }
+
+    function setPanelBackground() {
       if (panel.colorBackground) {
         var color = getColorForValue(data, data.value);
         if (color) {
@@ -641,13 +750,26 @@ class StatisticsCtrl extends MetricsPanelCtrl {
         $panelContainer.css('background-color', '');
         elem.css('background-color', '');
       }
+    }
 
-      let title = '<div class="statistics-panel-title-container">'+
-                    '<span class="fa fa-'+panel.iconType+'"></span>'+
-                    '<span class="statistics-panel-title-content">'+panel.subtitle+'</span>'+
-                  '</div>';
+    function render() {
 
-      elem.html(title);
+      elem.html(getTitle());
+
+      if (!ctrl.data) {
+        return;
+      }
+      data = ctrl.data;
+
+      // get thresholds
+      data.thresholds = panel.thresholds.split(',').map(function(strVale) {
+        return Number(strVale.trim());
+      });
+      data.colorMap = panel.colors;
+
+      setPanelBackground();
+
+      var body = panel.gauge.show ? '' : getBigValueHtml();
       elem.append(body);
 
       if (panel.sparkline.show) {
@@ -660,12 +782,11 @@ class StatisticsCtrl extends MetricsPanelCtrl {
 
       elem.toggleClass('pointer', panel.links.length > 0);
 
-      /*if (panel.links.length > 0) {
-        linkInfo = linkSrv.getPanelLinkAnchorInfo(panel.links[0], data.scopedVars);
-      } else {
+      //if (panel.links.length > 0) {
+      //  linkInfo = linkSrv.getPanelLinkAnchorInfo(panel.links[0], data.scopedVars);
+      //} else {
         linkInfo = null;
-      }*/
-      linkInfo = null;
+      //}
     }
 
     function hookupDrilldownLinkTooltip() {
@@ -737,6 +858,21 @@ function getColorForValue(data, value) {
   return _.first(data.colorMap);
 }
 
-export { StatisticsCtrl, StatisticsCtrl as PanelCtrl, getColorForValue };
+function processTargets(targets) {
+  let whereClauses = targets
+    .map(elem => elem.whereClauses
+    .filter(elem=>elem.operator=="="))
+    .map(elem=>elem.map(({ column, value })=>({ column, value })))
+  let metrics = targets.map(elem=>elem.metricAggs
+    .filter(elem=>elem.type=='raw'))
+    .map(elem=>elem.map(({ column })=>({ column })))
 
-StatisticsCtrl.templateUrl = 'module.html';
+  let entities = whereClauses.length > 0 ? whereClauses[0].map(elem=>elem) : []
+  let fields = metrics.length > 0 ? metrics[0].map(elem=>elem) : []
+
+  return [entities, fields]
+}
+
+StatisticsCtrl.templateUrl = 'partials/module.html';
+
+export { StatisticsCtrl, StatisticsCtrl as PanelCtrl, getColorForValue };

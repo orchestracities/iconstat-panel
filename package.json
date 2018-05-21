@@ -1,7 +1,7 @@
 {
   "name": "statistics-panel",
   "private": true,
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Statistics panel for grafana",
   "repository": {
     "type": "git",
@@ -15,6 +15,7 @@
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-preset-env": "^1.6.1",
+
     "grunt": "^1.0.2",
     "grunt-babel": "^7.0.0",
     "grunt-contrib-clean": "^1.1.0",

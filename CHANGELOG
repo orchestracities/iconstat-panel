@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.0
+- Ability to change the value displayed in panel by clicking panel.
+- Text color modified to near white.
+
 ## 0.1.0
 - Singlestat panel has external plugin.
 - Add custom title with icon to the panel's top.

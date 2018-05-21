@@ -1,0 +1,65 @@
+<div class="modal-body" ng-cloak>
+  <div class="modal-header">
+    <h3 class="modal-header-title">
+      <i class="fa fa-pencil"></i>
+      <span class="p-l-1">Actuate</span>
+    </h3>
+    <a class="modal-header-close" ng-click="dismiss()"><i class="fa fa-remove"></i></a>
+  </div>
+
+  <div class="modal-content text-center">
+    <div class="server-response">
+    </div>
+
+    <form>
+      <div class="inline-block m-t-1">
+        <div class="m-b-1">
+          <div>
+            <label>Resource</label>
+          </div>
+          <div>
+            <select class="gf-form-input"
+              ng-model="ctrl.modal.entity"
+              ng-options="f.column for f in ctrl.modal.allowedEntities"
+              required>
+              <!-- <option value="" disabled selected>Select one option</option> -->
+            </select>
+          </div>
+        </div>
+        <div class="m-b-1">
+          <div>
+            <label>Field</label>
+          </div>
+          <div>
+            <select class="gf-form-input"
+              ng-model="ctrl.modal.type"
+              ng-options="f.column for f in ctrl.modal.allowedTypes"
+              required>
+              <!-- <option value="" disabled selected>Select one option</option> -->
+            </select>
+          </div>
+        </div>
+
+        <div class="m-b-1">
+          <div>
+            <label>Value</label>
+          </div>
+          <div>
+            <input
+              ng-model="ctrl.modal.value" type="text"
+              class="gf-form-input width-16"
+              placeholder="Insert the desired value"
+              required />
+          </div>
+        </div>
+
+        <div class="confirm-modal-buttons">
+          <button type="button" class="btn btn-success"
+            ng-click="ctrl.handleSendToRemote()"
+            give-focus="true">Update</button>
+          <button type="button" class="btn btn-inverse" ng-click="dismiss()">Cancel</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
