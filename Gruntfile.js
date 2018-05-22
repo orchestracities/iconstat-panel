@@ -51,7 +51,5 @@ module.exports = function(grunt) {
 
   });
 
-
-//  grunt.loadNpmTasks("grunt-ts");
   grunt.registerTask('default', ['clean', 'copy:srcToDist', 'copy:pluginDef', 'babel']);
 };

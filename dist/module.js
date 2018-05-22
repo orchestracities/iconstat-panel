@@ -240,6 +240,11 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
   }, {
     key: 'onDataReceived',
     value: function onDataReceived(dataList) {
+      if (!dataList) {
+        console.debug('No data recieved');
+        return;
+      }
+
       var data = {};
       if (dataList.length > 0 && dataList[0].type === 'table') {
         this.dataType = 'table';
@@ -250,6 +255,7 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
         this.series = dataList.map(this.seriesHandler.bind(this));
         this.setValues(data);
       }
+
       this.data = data;
       console.debug(this.data);
       this.render();
@@ -576,6 +582,9 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
       }
 
       function getTrendIndicator() {
+
+        if (data.flotpairs.length <= 1) throw new Error('Unable to show trend. Please, choose other interval or verify the resultset.');
+
         console.debug('first value: ' + data.flotpairs[0][1] + ', last value: ' + data.flotpairs[data.flotpairs.length - 1][1]);
         var trendIndicatorValue = data.flotpairs[data.flotpairs.length - 1][1] - data.flotpairs[0][1];
         var icon = void 0;
