@@ -5,7 +5,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-execute');
   grunt.loadNpmTasks('grunt-contrib-clean');
 
-
   grunt.initConfig({
 
     clean: ["dist"],
@@ -51,7 +50,5 @@ module.exports = function(grunt) {
 
   });
 
-
-//  grunt.loadNpmTasks("grunt-ts");
   grunt.registerTask('default', ['clean', 'copy:srcToDist', 'copy:pluginDef', 'babel']);
 };

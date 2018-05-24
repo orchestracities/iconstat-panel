@@ -198,7 +198,12 @@ class StatisticsCtrl extends MetricsPanelCtrl {
   }
 
   onDataReceived(dataList) {
-    const data = {};
+    if(!dataList) {
+      console.debug('No data recieved')
+      return ;
+    }
+
+    let data = {};
     if (dataList.length > 0 && dataList[0].type === 'table') {
       this.dataType = 'table';
       const tableData = dataList.map(this.tableHandler.bind(this));
@@ -208,6 +213,7 @@ class StatisticsCtrl extends MetricsPanelCtrl {
       this.series = dataList.map(this.seriesHandler.bind(this));
       this.setValues(data);
     }
+
     this.data = data;
     console.debug(this.data)
     this.render();
@@ -521,6 +527,10 @@ class StatisticsCtrl extends MetricsPanelCtrl {
     }
 
     function getTrendIndicator() {
+
+      if(data.flotpairs.length<=1)
+        throw new Error('Unable to show trend. Please, choose other interval or verify the resultset.')
+
       console.debug(`first value: ${data.flotpairs[0][1]}, last value: ${data.flotpairs[data.flotpairs.length-1][1]}`)
       let trendIndicatorValue = data.flotpairs[data.flotpairs.length-1][1]-data.flotpairs[0][1]
       let icon;

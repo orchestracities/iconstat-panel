@@ -1,8 +1,9 @@
 # Changelog
 
 ## 1.0.0
-- Ability to change the value displayed in panel by clicking panel.
+- Ability to change the value displayed in the panel by clicking on it.
 - Text color modified to near white.
+- Trend indicator.
 
 ## 0.1.0
 - Singlestat panel has external plugin.
