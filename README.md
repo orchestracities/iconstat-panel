@@ -10,10 +10,21 @@ It can also translate the single number into a text value, and show a sparkline 
 
 If you want simply to run the plugin you will only need step 1. and 4.
 
-1. Clone or copy the repo to your grafana plugin folder
-2. Install node dependencies with npm or yarn
-3. Build the source code.<br>
-   One way is by simply execute `$ grunt`<br>
-   (Your user should have the group expected by grafana to avoid using sudo)
-4. Restart your grafana instance
+1. Clone or copy the repo to your grafana plugin folder.
+2. Install node dependencies with npm or yarn.
+3. Start kubectl to acquire data.
+```sh
+kubectl [--kubeconfig <path to config file>] port-forward --namespace prod crate-0 4200:4200
+```
+4. Start docker-compose.
+```sh
+(...)/grafana_data/plugins/grafana_status_panel (master)$ docker-compose start grafana
+```
 
+## Development
+
+To Build the source code just type
+```sh
+$ grunt
+```
+(Your user should have the group expected by grafana to avoid using sudo)
