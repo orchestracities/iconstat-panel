@@ -583,7 +583,10 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
 
       function getTrendIndicator() {
 
-        if (data.flotpairs.length <= 1) throw new Error('Unable to show trend. Please, choose other interval or verify the resultset.');
+        if (data.flotpairs.length <= 1) {
+          console.info('Unable to show trend. Please, choose other interval or verify the resultset.');
+          return '<span></span>';
+        }
 
         console.debug('first value: ' + data.flotpairs[0][1] + ', last value: ' + data.flotpairs[data.flotpairs.length - 1][1]);
         var trendIndicatorValue = data.flotpairs[data.flotpairs.length - 1][1] - data.flotpairs[0][1];
@@ -840,11 +843,7 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
 
         elem.toggleClass('pointer', panel.links.length > 0);
 
-        //if (panel.links.length > 0) {
-        //  linkInfo = linkSrv.getPanelLinkAnchorInfo(panel.links[0], data.scopedVars);
-        //} else {
         linkInfo = null;
-        //}
       }
 
       function hookupDrilldownLinkTooltip() {
