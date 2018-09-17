@@ -139,7 +139,8 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
     _this.onSparklineColorChange = _this.onSparklineColorChange.bind(_this);
     _this.onSparklineFillChange = _this.onSparklineFillChange.bind(_this);
 
-    _this.handleClickPanel = _this.showModal.bind(_this);
+    _this.handleClickActuation = _this.showActuationModal.bind(_this);
+    _this.handleClickTitle = _this.showDetailsModal.bind(_this);
     _this.handleSendToRemote = _this.sendToRemote.bind(_this);
     return _this;
   }
@@ -157,8 +158,13 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
       };
     }
   }, {
-    key: 'showModal',
-    value: function showModal() {
+    key: 'initDetailModalValues',
+    value: function initDetailModalValues() {
+      this.modal = { values: this.getValues() };
+    }
+  }, {
+    key: 'showActuationModal',
+    value: function showActuationModal() {
       if (!this.panel.allowActuation) return;
 
       this.initModalValues();
@@ -174,7 +180,22 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
       modalScope.panel = this.panel;
 
       this.publishAppEvent('show-modal', {
-        src: this.base_path + 'partials/modal.html',
+        src: this.base_path + 'partials/modal_actuation.html',
+        modalClass: 'confirm-modal',
+        scope: modalScope
+      });
+    }
+  }, {
+    key: 'showDetailsModal',
+    value: function showDetailsModal() {
+
+      this.initDetailModalValues();
+
+      var modalScope = this.$scope.$new();
+      modalScope.panel = this.panel;
+
+      this.publishAppEvent('show-modal', {
+        src: this.base_path + 'partials/modal_details.html',
         modalClass: 'confirm-modal',
         scope: modalScope
       });
@@ -242,6 +263,11 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
     value: function onDataReceived(dataList) {
       if (!dataList) {
         console.debug('No data recieved');
+        return;
+      }
+
+      if (dataList.length === 0) {
+        console.debug('No dataList recieved');
         return;
       }
 
@@ -432,14 +458,21 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
     value: function setValues(data) {
       data.flotpairs = [];
 
-      if (this.series.length > 1) {
+      console.log('setValues...');
+      console.log(this.series);
+
+      if (this.series.length === 0) {
         var error = new Error();
-        error.message = 'Multiple Series Error';
-        error.data = 'Metric query returns ' + this.series.length + ' series. Single Stat Panel expects a single series.\n\nResponse:\n' + JSON.stringify(this.series);
+        error.message = 'No Series Error';
+        error.data = 'Metric query returns ' + this.series.length + ' series. Single Stat Panel expects a series.\n\nResponse:\n' + JSON.stringify(this.series);
         throw error;
       }
 
       if (this.series && this.series.length > 0) {
+        if (this.series.length > 1) {
+          console.log('=> multiple series: #' + this.series.length);
+        }
+
         var lastPoint = _lodash2.default.last(this.series[0].datapoints);
         var lastValue = _lodash2.default.isArray(lastPoint) ? lastPoint[0] : null;
 
@@ -546,6 +579,19 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
       this.panel.rangeMaps.push({ from: '', to: '', text: '' });
     }
   }, {
+    key: 'getValues',
+    value: function getValues() {
+      var _this3 = this;
+
+      var size = this.series.length;
+
+      return this.series[0].datapoints.map(function (elem, i) {
+        var v = [_this3.series[0].datapoints[i][0]];
+        if (size > 1) v.push(_this3.series[1].datapoints[i][0]);
+        return v;
+      });
+    }
+  }, {
     key: 'link',
     value: function link(scope, elem, attrs, ctrl) {
       var $location = this.$location;
@@ -557,7 +603,7 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
           linkInfo = void 0;
 
       var $panelContainer = elem.find('.panel-container');
-      elem = elem.find('.statistics-panel');
+      elem = elem.find('.statistics-panel-value-container');
 
       function applyColoringThresholds(value, valueString) {
         if (!panel.colorValue) {
@@ -572,18 +618,18 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
         return valueString;
       }
 
-      function getSpan(className, fontSize, content) {
+      function getDiv(className, fontSize, content) {
         content = templateSrv.replace(content, data.scopedVars);
-        var spanContent = '<span class="' + className;
+        var spanContent = '<div class="' + className;
         if (fontSize) spanContent += '" style="font-size:' + fontSize;
 
-        spanContent += '">' + content + '</span>';
+        spanContent += '">' + content + '</div>';
         return spanContent;
       }
 
       function getTrendIndicator() {
-
-        if (data.flotpairs.length <= 1) {
+        //probably the 'Format as' is of type 'table'. 'table' is not supported
+        if (!data.flotpairs && data.flotpairs.length <= 1) {
           console.info('Unable to show trend. Please, choose other interval or verify the resultset.');
           return '<span></span>';
         }
@@ -600,26 +646,24 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
       }
 
       function getBigValueHtml() {
-        var body = '<div class="statistics-panel-value-container"><div>';
+        var body = '';
 
         if (panel.prefix) {
           var prefix = applyColoringThresholds(data.value, panel.prefix);
-          body += getSpan('statistics-panel-prefix', panel.prefixFontSize, prefix);
+          body += getDiv('statistics-panel-prefix', panel.prefixFontSize, prefix);
         }
 
         var value = applyColoringThresholds(data.value, data.valueFormatted);
-        body += getSpan('statistics-panel-value', panel.valueFontSize, value);
+        body += getDiv('statistics-panel-value', panel.valueFontSize, value);
 
         if (panel.postfix) {
           var postfix = applyColoringThresholds(data.value, panel.postfix);
-          body += getSpan('statistics-panel-postfix', panel.postfixFontSize, postfix);
+          body += getDiv('statistics-panel-postfix', panel.postfixFontSize, postfix);
         }
 
         if (panel.trendIndicator.show) {
-          body += getSpan('statistics-panel-trendIndicator', panel.trendIndicator.size + 'px', getTrendIndicator());
+          body += getDiv('statistics-panel-trendIndicator', panel.trendIndicator.size + 'px', getTrendIndicator());
         }
-
-        body += '</div></div>';
 
         return body;
       }
@@ -785,17 +829,6 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
         _jquery2.default.plot(plotCanvas, [plotSeries], options);
       }
 
-      function getTitle() {
-        var title = '<div class="statistics-panel-title-container">';
-
-        if (panel.iconType !== 'none') title += '<span class="fa fa-' + panel.iconType + '"></span>';
-
-        title += '<span class="statistics-panel-title-content">' + panel.subtitle + '</span>';
-        title += '</div>';
-
-        return title;
-      }
-
       function setPanelBackground() {
         if (panel.colorBackground) {
           var color = getColorForValue(data, data.value);
@@ -815,11 +848,8 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
 
       function render() {
 
-        elem.html(getTitle());
+        if (!ctrl.data || ctrl.data.length === 0) return;
 
-        if (!ctrl.data) {
-          return;
-        }
         data = ctrl.data;
 
         // get thresholds
@@ -830,16 +860,10 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
 
         setPanelBackground();
 
-        var body = panel.gauge.show ? '' : getBigValueHtml();
-        elem.append(body);
-
-        if (panel.sparkline.show) {
-          addSparkline();
-        }
-
-        if (panel.gauge.show) {
-          addGauge();
-        }
+        elem.html('');
+        !panel.gauge.show && elem.append(getBigValueHtml());
+        panel.sparkline.show && addSparkline();
+        panel.gauge.show && addGauge();
 
         elem.toggleClass('pointer', panel.links.length > 0);
 
