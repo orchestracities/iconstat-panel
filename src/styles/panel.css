@@ -1,50 +1,57 @@
 .statistics-panel {
-  position: relative;
-  display: table;
-  width: 100%;
-  height: 100%;
   color: #f7f8fa;
+  height: 100%;
+  font-size: 30px;
 }
 
 .statistics-panel-title-container {
-  height: 10px;
-  display: table-row;
-  vertical-align: top;
+  height: 10%;
   text-align: center;
-  position: relative;
   z-index: 1;
   font-size: 1.5rem;
-  /*font-weight: bold;*/
 }
 
 .statistics-panel-title-container > .statistics-panel-title-content {
   padding-left: 10px;
-  text-align: center;
+/*  height: 10%;*/
 }
 
 .statistics-panel-value-container {
-/*  line-height: 1;*/
-  display: table-row;
-  vertical-align: middle;
-  text-align: center;
-  position: relative;
+  height: 90%;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
   z-index: 1;
   font-size: 3em;
   font-weight: bold;
 }
 
-.statistics-panel-value-container>div {
-  display: table-cell;
-  vertical-align: middle;
+
+
+
+.statistics-panel-value-container .action-buttons {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
-.statistics-panel-value-container>div>.statistics-panel-value {
+
+.statistics-panel-value-container-v {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
-.statistics-panel-prefix {
+
+
+
+
+
+.statistics-panel-value-container .statistics-panel-prefix {
   padding-right: 20px;
 }
 
-.statistics-panel-trendIndicator {
-  /*font-size: 60px;*/
+.statistics-panel-value-container .statistics-panel-trendIndicator {
   margin-left: 20px;
 }
 
@@ -59,4 +66,11 @@
 form label {
   text-align: left;
   font-weight: bold;
+}
+
+.panel-btn {
+  color: #8e8e8e
+}
+.panel-btn:hover{
+  color: inherit;
 }

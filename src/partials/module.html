@@ -1,2 +1,22 @@
-<div class="statistics-panel" ng-click="ctrl.handleClickPanel()">
+<div class="statistics-panel">
+  <div class="statistics-panel-title-container" ng-click="ctrl.handleClickTitle()">
+    <span class="fa fa-{{ctrl.panel.iconType}}"></span>
+    <span class="statistics-panel-title-content">{{ctrl.panel.subtitle}}</span>
+  </div>
+
+  <div class="statistics-panel-value-container" ng-click="ctrl.handleClickActuation()">
+<!--     <div class="action-buttons">
+      <a class="btn btn-sm panel-btn">
+        <i class="fa fa-pencil"></i>
+      </a>
+      <a class="btn btn-sm panel-btn">
+        <i class="fa fa-list-alt"></i>
+      </a>
+    </div> -->
+
+<!--     <div class="statistics-panel-value-container-v" ng-if="!ctrl.panel.gauge.show">
+
+    </div> -->
+
+  </div>
 </div>

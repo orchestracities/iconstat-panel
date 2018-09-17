@@ -1,0 +1,31 @@
+<div class="modal-body" ng-cloak>
+  <div class="modal-header">
+    <h3 class="modal-header-title">
+      <i class="fa fa-pencil"></i>
+      <span class="p-l-1">Details</span>
+    </h3>
+    <a class="modal-header-close" ng-click="dismiss()"><i class="fa fa-remove"></i></a>
+  </div>
+
+  <div class="modal-content text-center">
+    <div class="server-response">
+    </div>
+
+    <form>
+      <div class="inline-block m-t-1">
+        <div style="overflow-y: auto; height: 300px">
+          <table>
+            <thead>
+              <th style="min-width:100px"></th><th style="min-width:100px"></th>
+            </thead>
+            <tbody>
+              <tr ng-repeat="value in ctrl.modal.values">
+                <td>{{ value[0] }}</td><td>{{ value[1] }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
