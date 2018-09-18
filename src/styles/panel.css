@@ -28,9 +28,6 @@
   font-weight: bold;
 }
 
-
-
-
 .statistics-panel-value-container .action-buttons {
   display: flex;
   flex-direction: column;
@@ -42,10 +39,6 @@
   flex-direction: row;
   align-items: center;
 }
-
-
-
-
 
 .statistics-panel-value-container .statistics-panel-prefix {
   padding-right: 20px;
@@ -69,8 +62,28 @@ form label {
 }
 
 .panel-btn {
-  color: #8e8e8e
+  color: #8e8e8e;
 }
 .panel-btn:hover{
   color: inherit;
+}
+
+.modal-details {
+  padding: 0;
+  margin: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 300px;
+  width: 100%;
+}
+
+.modal-details>.modal-details-element {
+  border-bottom: 1px solid grey;
+}
+.modal-details>.modal-details-element:hover {
+  background-color: #212124;
+  /*dimgrey;*/
+}
+.text-align-right {
+  text-align: right;
 }

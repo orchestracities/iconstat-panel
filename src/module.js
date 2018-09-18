@@ -127,7 +127,7 @@ class StatisticsCtrl extends MetricsPanelCtrl {
   }
 
   initDetailModalValues() {
-    this.modal = { values: this.getValues() }
+    this.modal = { values: this.getDetailsModalValues() }
   }
 
   showActuationModal() {
@@ -160,7 +160,6 @@ class StatisticsCtrl extends MetricsPanelCtrl {
       scope: modalScope,
     });
   }
-
 
   validFieldValues() {
     return (this.modal.type.column!==undefined && this.modal.entity.value!==undefined && this.modal.value!==undefined && this.modal.value!=='')
@@ -527,15 +526,24 @@ class StatisticsCtrl extends MetricsPanelCtrl {
     this.panel.rangeMaps.push({ from: '', to: '', text: '' });
   }
 
-  getValues() {
-    let size = this.series.length
+  getDetailsModalValues() {
+    if(!this.series[0].datapoints)
+      return ;
+    let lines_total = this.series.length
+    let cols_total = this.series[0].datapoints.length
 
-    return this.series[0].datapoints.map((elem, i)=>{
-      let v = [this.series[0].datapoints[i][0]]
-      if(size>1)
-        v.push(this.series[1].datapoints[i][0])
-      return v
-    })
+    let result = []
+    let pair = null
+
+    for(let c=0; c<cols_total; c++) {
+      pair = {}
+      for(let l=0; l<lines_total; l++) {
+        pair[this.series[l].alias||this.series[l].label] = this.series[l].datapoints[c][0]
+      }
+      result.push(pair)
+    }
+
+    return result
   }
 
   link(scope, elem, attrs, ctrl) {
