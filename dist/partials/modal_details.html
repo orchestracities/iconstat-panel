@@ -7,25 +7,13 @@
     <a class="modal-header-close" ng-click="dismiss()"><i class="fa fa-remove"></i></a>
   </div>
 
-  <div class="modal-content text-center">
-    <div class="server-response">
-    </div>
-
-    <form>
-      <div class="inline-block m-t-1">
-        <div style="overflow-y: auto; height: 300px">
-          <table>
-            <thead>
-              <th style="min-width:100px"></th><th style="min-width:100px"></th>
-            </thead>
-            <tbody>
-              <tr ng-repeat="value in ctrl.modal.values">
-                <td>{{ value[0] }}</td><td>{{ value[1] }}</td>
-              </tr>
-            </tbody>
-          </table>
+  <div class="modal-content">
+    <div class="modal-details m-t-1">
+      <div class="modal-details-element" ng-repeat="elem in ctrl.modal.values">
+        <div class="row" ng-repeat="(key, value) in elem">
+          <div class="col-sm-12 col-md-6 text-align-right">{{ key }}</div><div class="col-sm-12 col-md-6">{{ value }}</div>
         </div>
       </div>
-    </form>
+    </div>
   </div>
 </div>

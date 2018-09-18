@@ -160,7 +160,7 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
   }, {
     key: 'initDetailModalValues',
     value: function initDetailModalValues() {
-      this.modal = { values: this.getValues() };
+      this.modal = { values: this.getDetailsModalValues() };
     }
   }, {
     key: 'showActuationModal',
@@ -579,17 +579,24 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
       this.panel.rangeMaps.push({ from: '', to: '', text: '' });
     }
   }, {
-    key: 'getValues',
-    value: function getValues() {
-      var _this3 = this;
+    key: 'getDetailsModalValues',
+    value: function getDetailsModalValues() {
+      if (!this.series[0].datapoints) return;
+      var lines_total = this.series.length;
+      var cols_total = this.series[0].datapoints.length;
 
-      var size = this.series.length;
+      var result = [];
+      var pair = null;
 
-      return this.series[0].datapoints.map(function (elem, i) {
-        var v = [_this3.series[0].datapoints[i][0]];
-        if (size > 1) v.push(_this3.series[1].datapoints[i][0]);
-        return v;
-      });
+      for (var c = 0; c < cols_total; c++) {
+        pair = {};
+        for (var l = 0; l < lines_total; l++) {
+          pair[this.series[l].alias || this.series[l].label] = this.series[l].datapoints[c][0];
+        }
+        result.push(pair);
+      }
+
+      return result;
     }
   }, {
     key: 'link',
