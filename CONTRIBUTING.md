@@ -2,25 +2,23 @@ Statistics Panel - External Grafana Plugin - CONTRIBUTING
 
 ## Install
 
-If you want simply to run the plugin you will only need step 1. and 4.
-
 1. Clone or copy the repo to your grafana plugin folder.
 
-2. Install lib dependencies with npm or yarn.
-```
-$ yarn install
-```
+2. Confirm that you have data to use
 
-3. Confirm that you have data to use
 eg. Start kubectl to acquire data.
 ```sh
 $ kubectl [--kubeconfig <path to config file>] port-forward --namespace prod crate-0 4200:4200
 ```
 
-4. Start your docker container.
+3. If using docker, start your docker container.
 ```sh
 (...)/grafana/plugins/statistics_panel (master)$ docker-compose start grafana
 ```
+
+4. Config your plugin at grafana url
+
+Probably at dev, http://localhost:3000.
 
 ## Development
 
@@ -31,14 +29,19 @@ $ kubectl [--kubeconfig <path to config file>] port-forward --namespace prod cra
 $ cd grafana/plugins/statistics_panel
 ```
 
-3. Make your changes
+3. Install lib dependencies with npm or yarn.
+```
+$ yarn install
+```
 
-4. Build
+4. Make your changes
+
+5. Build
 ```sh
 $ yarn build
 ```
 
-5. Start / Restart Grafana container
+6. Start / Restart Grafana container
 
 $ docker-compose restart grafana
 
@@ -46,5 +49,3 @@ $ docker-compose restart grafana
 ## Other Info
 
 If you get permissions error, probably your user should have the group expected by grafana to avoid using sudo.
-
-
