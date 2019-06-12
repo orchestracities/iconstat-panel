@@ -1,7 +1,11 @@
 <div class="statistics-panel">
-  <div class="statistics-panel-title-container" ng-click="ctrl.handleClickTitle()">
-    <span class="fa fa-{{ctrl.panel.iconType}}"></span>
-    <span class="statistics-panel-title-content">{{ctrl.panel.subtitle}}</span>
+  <div class="statistics-panel-title-container">
+    <span class="fa fa-{{ctrl.panel.iconType}}" ng-click="ctrl.handleClickTitle()"></span>
+    <span class="statistics-panel-title-content" ng-click="ctrl.handleClickTitle()">{{ctrl.panel.subtitle}}</span>
+    <div>
+      <span>Input Value: {{ctrl.panel.inputValue}}</span>
+      <input class="slider" ng-click="ctrl.handleClickInput()" ng-model="ctrl.panel.inputValue" type="range" min="0" max="100" value="ctrl.panel.inputValue" id="inputRange">
+    </div>
   </div>
 
   <div class="statistics-panel-value-container" ng-click="ctrl.handleClickActuation()">

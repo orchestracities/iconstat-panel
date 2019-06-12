@@ -122,7 +122,12 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
       },
       tableColumn: '',
       subtitle: 'NA',
-
+      orionURL: 'https://orion.s.orchestracities.com',
+      fiwareService: 'default',
+      fiwareServicepath: '/',
+      entity: '',
+      entityField: '',
+      inputValue: 0,
       iconType: '',
       allowActuation: false
     };
@@ -142,10 +147,43 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
     _this.handleClickActuation = _this.showActuationModal.bind(_this);
     _this.handleClickTitle = _this.showDetailsModal.bind(_this);
     _this.handleSendToRemote = _this.sendToRemote.bind(_this);
+
+    _this.handleClickInput = _this.sendInputToOrion.bind(_this);
     return _this;
   }
 
   _createClass(StatisticsCtrl, [{
+    key: 'sendInputToOrion',
+    value: function sendInputToOrion() {
+      console.log(this.panel.inputValue);
+      var url = this.panel.orionURL + '/v2/entities/' + this.panel.entity + '/attrs/?options=keyValues';
+      var data = {};
+      data[this.panel.entityField] = this.panel.inputValue;
+      console.log(url);
+      console.log(data);
+      var headers = {
+        'Content-Type': 'application/json',
+        'Fiware-Service': this.panel.fiwareService,
+        'Fiware-ServicePath': this.panel.fiwareServicepath
+      };
+      fetch(url, {
+        method: 'POST',
+        mode: 'cors', // no-cors, cors, *same-origin
+        body: JSON.stringify(data), // data can be `string` or {object}!
+        headers: new Headers(headers)
+      }).then(function (response) {
+        if (response.ok) {
+          console.info('Success:', response);
+        } else {
+          console.warn('Error:', error);
+          alert('An error has occured: failed to update');
+        }
+      }).catch(function (error) {
+        console.warn('Error:', error);
+        alert('An error has occured: failed to update');
+      });
+    }
+  }, {
     key: 'initModalValues',
     value: function initModalValues() {
       this.modal = {
@@ -214,16 +252,22 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
         return;
       }
 
-      var url = _definitions2.default.remote_server.replace('<device_id>', this.modal.entity.value);
+      //let url = definitions.remote_server.replace('<device_id>', this.modal.entity.value);
+      var url = this.panel.orionURL + '/v2/entities/' + this.modal.entity.value + '/attrs/?options=keyValues';
       var data = {};
       data[this.modal.type.column] = this.modal.value;
       console.info(url);
       console.info(data);
+      var headers = {
+        'Content-Type': 'application/json',
+        'Fiware-Service': this.panel.fiwareService,
+        'Fiware-ServicePath': this.panel.fiwareServicepath
+      };
       fetch(url, {
         method: 'POST',
         mode: 'cors', // no-cors, cors, *same-origin
         body: JSON.stringify(data), // data can be `string` or {object}!
-        headers: new Headers(_definitions2.default.request_header)
+        headers: new Headers(headers)
       }).then(function (response) {
         if (response.ok) {
           console.info('Success:', response);
@@ -462,10 +506,10 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
       console.log(this.series);
 
       if (this.series.length === 0) {
-        var error = new Error();
-        error.message = 'No Series Error';
-        error.data = 'Metric query returns ' + this.series.length + ' series. Single Stat Panel expects a series.\n\nResponse:\n' + JSON.stringify(this.series);
-        throw error;
+        var _error = new Error();
+        _error.message = 'No Series Error';
+        _error.data = 'Metric query returns ' + this.series.length + ' series. Single Stat Panel expects a series.\n\nResponse:\n' + JSON.stringify(this.series);
+        throw _error;
       }
 
       if (this.series && this.series.length > 0) {

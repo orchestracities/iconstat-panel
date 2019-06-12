@@ -93,7 +93,12 @@ class StatisticsCtrl extends MetricsPanelCtrl {
       },
       tableColumn: '',
       subtitle: 'NA',
-
+      orionURL: 'https://orion.s.orchestracities.com',
+      fiwareService: 'default',
+      fiwareServicepath: '/',
+      entity: '',
+      entityField: '',
+      inputValue: 0,
       iconType: '',
       allowActuation: false,
     };
@@ -113,6 +118,40 @@ class StatisticsCtrl extends MetricsPanelCtrl {
     this.handleClickActuation = this.showActuationModal.bind(this);
     this.handleClickTitle = this.showDetailsModal.bind(this);
     this.handleSendToRemote = this.sendToRemote.bind(this);
+
+    this.handleClickInput = this.sendInputToOrion.bind(this);
+  }
+
+  sendInputToOrion() {
+    console.log(this.panel.inputValue)
+    let url = this.panel.orionURL + '/v2/entities/' + this.panel.entity + '/attrs/?options=keyValues'
+    let data = {}
+    data[this.panel.entityField] = this.panel.inputValue
+    console.log(url)
+    console.log(data)
+    const headers = {
+        'Content-Type': 'application/json',
+        'Fiware-Service': this.panel.fiwareService,
+        'Fiware-ServicePath': this.panel.fiwareServicepath
+      }
+    fetch(url, {
+      method: 'POST',
+      mode: 'cors', // no-cors, cors, *same-origin
+      body: JSON.stringify(data), // data can be `string` or {object}!
+      headers: new Headers(headers)
+    })
+    .then((response) => {
+      if(response.ok) {
+        console.info('Success:', response)
+      } else {
+        console.warn('Error:', error)
+        alert('An error has occured: failed to update')
+      }
+    })
+    .catch((error) => {
+      console.warn('Error:', error)
+      alert('An error has occured: failed to update')
+    })
   }
 
   initModalValues() {
@@ -172,16 +211,22 @@ class StatisticsCtrl extends MetricsPanelCtrl {
       return ;
     }
 
-    let url = definitions.remote_server.replace('<device_id>', this.modal.entity.value);
+    //let url = definitions.remote_server.replace('<device_id>', this.modal.entity.value);
+    let url = this.panel.orionURL + '/v2/entities/' + this.modal.entity.value + '/attrs/?options=keyValues'
     let data = {}
     data[this.modal.type.column] = this.modal.value
     console.info(url)
     console.info(data)
+    const headers = {
+        'Content-Type': 'application/json',
+        'Fiware-Service': this.panel.fiwareService,
+        'Fiware-ServicePath': this.panel.fiwareServicepath
+      }
     fetch(url, {
       method: 'POST',
       mode: 'cors', // no-cors, cors, *same-origin
       body: JSON.stringify(data), // data can be `string` or {object}!
-      headers: new Headers(definitions.request_header)
+      headers: new Headers(headers)
     })
     .then((response) => {
       if(response.ok) {
