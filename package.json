@@ -25,5 +25,7 @@
     "grunt-systemjs-builder": "^1.0.0",
     "load-grunt-tasks": "^3.5.2"
   },
-  "dependencies": {}
+  "dependencies": {
+    "yarn": "^1.16.0"
+  }
 }

@@ -1,26 +1,19 @@
 <div class="statistics-panel">
-  <div class="statistics-panel-title-container">
-    <span class="fa fa-{{ctrl.panel.iconType}}" ng-click="ctrl.handleClickTitle()"></span>
-    <span class="statistics-panel-title-content" ng-click="ctrl.handleClickTitle()">{{ctrl.panel.subtitle}}</span>
-    <div>
-      <span>Input Value: {{ctrl.panel.inputValue}}</span>
-      <input class="slider" ng-click="ctrl.handleClickInput()" ng-model="ctrl.panel.inputValue" type="range" min="0" max="100" value="ctrl.panel.inputValue" id="inputRange">
-    </div>
+  <div ng-if='ctrl.panel.subtitle != "" || ctrl.panel.iconPosition === "title"' class="statistics-panel-title-container">
+    <span ng-if='ctrl.panel.iconPosition === "title"' class="fa fa-{{ctrl.panel.iconType}}" ng-click="ctrl.handleClickTitle()"></span>
+    <span ng-if='ctrl.panel.subtitle != ""' class="statistics-panel-title-content" ng-click="ctrl.handleClickTitle()">{{ctrl.panel.subtitle}}</span>
   </div>
 
   <div class="statistics-panel-value-container" ng-click="ctrl.handleClickActuation()">
-<!--     <div class="action-buttons">
-      <a class="btn btn-sm panel-btn">
-        <i class="fa fa-pencil"></i>
-      </a>
-      <a class="btn btn-sm panel-btn">
-        <i class="fa fa-list-alt"></i>
-      </a>
-    </div> -->
-
-<!--     <div class="statistics-panel-value-container-v" ng-if="!ctrl.panel.gauge.show">
-
-    </div> -->
-
+  </div>
+  <div class="statistics-panel-actuator" ng-if="ctrl.panel.allowActuation">
+    <input class="slider"
+      ng-click="ctrl.handleClickInput()"
+      ng-model="ctrl.panel.inputValue"
+      ng-init="ctrl.panel.inputValue = (data.value ? data.value : 0)"
+      type="range" min="ctrl.panel.minValue"
+      max="ctrl.panel.maxValue"
+      value="ctrl.panel.inputValue"
+      id="inputRange">
   </div>
 </div>
