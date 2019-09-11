@@ -4,19 +4,21 @@ Statistics Panel - External Grafana Plugin - CONTRIBUTING
 
 1. Clone or copy the repo to your grafana plugin folder.
 
-2. Confirm that you have data to use
+1. Confirm that you have data to use
 
-eg. Start kubectl to acquire data.
-```sh
-$ kubectl [--kubeconfig <path to config file>] port-forward --namespace prod crate-0 4200:4200
-```
+    eg. Start kubectl to acquire data.
 
-3. If using docker, start your docker container.
-```sh
-(...)/grafana/plugins/statistics_panel (master)$ docker-compose start grafana
-```
+    ```sh
+    $ kubectl [--kubeconfig <path to config file>] port-forward --namespace prod crate-0 4200:4200 --address 0.0.0.0
+    ```
 
-4. Config your plugin at grafana url
+1. If using docker, start your docker container.
+
+    ```sh
+    $ docker-compose up -d
+    ```
+
+1. Config your plugin at grafana url
 
 Probably at dev, http://localhost:3000.
 
@@ -25,26 +27,30 @@ Probably at dev, http://localhost:3000.
 1. Clone project
 
 2. Go to the plugin location
-```
-$ cd grafana/plugins/statistics_panel
-```
+
+    ```sh
+    $ cd grafana/plugins/statistics_panel
+    ```
 
 3. Install lib dependencies with npm or yarn.
-```
-$ yarn install
-```
+
+    ```sh
+    $ yarn install
+    ```
 
 4. Make your changes
 
 5. Build
-```sh
-$ yarn build
-```
+
+    ```sh
+    $ yarn build
+    ```
 
 6. Start / Restart Grafana container
 
-$ docker-compose restart grafana
-
+    ```sh
+    $ docker-compose restart grafana
+    ```
 
 ## Other Info
 

@@ -2,14 +2,19 @@
   <h5 class="section-heading">Panel Options</h5>
 
   <div class="gf-form">
-    <span class="gf-form-label width-10">Title Icon
-      <info-popover mode="right-normal">The icon to show before title</info-popover>
+    <span class="gf-form-label width-10">Title</span>
+    <input type="text" ng-model="ctrl.panel.subtitle" class="gf-form-input max-width-12" ng-change="ctrl.render()">
+  </div>
+
+  <div class="gf-form">
+    <span class="gf-form-label width-10">Icon
+      <info-popover mode="right-normal">The icon to show</info-popover>
     </span>
     <div class="gf-form-select-wrapper max-width-12">
       <select class="gf-form-input"
-        ng-init="ctrl.panel.iconType = (ctrl.panel.iconType ? ctrl.panel.iconType : ctrl.iconTypesOptions[0])"
+        ng-init="ctrl.panel.iconType = (ctrl.panel.iconType ? ctrl.panel.iconType : ctrl.iconTypeOptions[0])"
         ng-model="ctrl.panel.iconType"
-        ng-options="iconType for iconType in ctrl.iconTypesOptions"
+        ng-options="iconType for iconType in ctrl.iconTypeOptions"
         ng-change="ctrl.render()"
         required>
       </select>
@@ -17,8 +22,18 @@
   </div>
 
   <div class="gf-form">
-    <span class="gf-form-label width-10">Title</span>
-    <input type="text" ng-model="ctrl.panel.subtitle" class="gf-form-input max-width-12" ng-change="ctrl.render()">
+    <span class="gf-form-label width-10">Icon Position
+      <info-popover mode="right-normal">Position Icon in Title or Next to Valuew</info-popover>
+    </span>
+    <div class="gf-form-select-wrapper max-width-12">
+      <select class="gf-form-input"
+        ng-init="ctrl.panel.iconPosition = (ctrl.panel.iconPosition ? ctrl.panel.iconPosition : ctrl.iconPositionOptions[0])"
+        ng-model="ctrl.panel.iconPosition"
+        ng-options="iconPosition for iconPosition in ctrl.iconPositionOptions"
+        ng-change="ctrl.render()"
+        required>
+      </select>
+    </div>
   </div>
 
   <div class="gf-form">
@@ -33,6 +48,33 @@
       on-change="ctrl.render()"
       >
     </gf-form-switch>
+  </div>
+
+  <div class="gf-form">
+    <span class="gf-form-label width-10">Current value from data
+      <info-popover mode="right-normal">
+        Set slider value from current value.
+      </info-popover>
+    </span>
+    <gf-form-switch class="gf-form"
+      switch-class="max-width-6"
+      checked="ctrl.panel.valueFromData"
+      on-change="ctrl.render()"
+      >
+    </gf-form-switch>
+  </div>
+
+  <div class="gf-form">
+    <span class="gf-form-label width-10">Min Value</span>
+    <input type="text"
+      ng-model="ctrl.panel.minValue"
+      class="gf-form-input max-width-12"
+      ng-change="ctrl.render()">
+  </div>
+
+  <div class="gf-form">
+    <span class="gf-form-label width-10">Max Value</span>
+    <input type="text" ng-model="ctrl.panel.maxValue" class="gf-form-input max-width-12" ng-change="ctrl.render()">
   </div>
 
   <div class="gf-form">

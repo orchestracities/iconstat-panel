@@ -17,7 +17,19 @@
 }
 
 .statistics-panel-value-container {
-  height: 90%;
+  height: 70%;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  font-size: 3em;
+  font-weight: bold;
+}
+
+.statistics-panel-actuator {
+  height: 10%;
 
   display: flex;
   flex-direction: row;
