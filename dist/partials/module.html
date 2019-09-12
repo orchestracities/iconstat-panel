@@ -10,7 +10,7 @@
     <input class="slider"
       ng-click="ctrl.handleClickInput()"
       ng-model="ctrl.panel.inputValue"
-      ng-init="ctrl.panel.inputValue = (data.value ? data.value : 0)"
+      ng-init="ctrl.panel.inputValue = (ctrl.data.value ? ctrl.data.value : 0)"
       type="range" min="ctrl.panel.minValue"
       max="ctrl.panel.maxValue"
       value="ctrl.panel.inputValue"

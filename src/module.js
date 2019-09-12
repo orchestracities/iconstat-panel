@@ -1048,10 +1048,11 @@ class StatisticsCtrl extends MetricsPanelCtrl {
 
     if(dataList.length === 0) {
       console.debug('No dataList recieved')
-      return ;
+      return;
     }
 
     let data = {};
+
     if (dataList.length > 0 && dataList[0].type === 'table') {
       this.dataType = 'table';
       const tableData = dataList.map(this.tableHandler.bind(this));
@@ -1120,6 +1121,8 @@ class StatisticsCtrl extends MetricsPanelCtrl {
     }
 
     if (tableData[0].length === 0 || tableData[0][0][this.panel.tableColumn] === undefined) {
+      data.value = null;
+      this.setValueMapping(data);
       return;
     }
 
