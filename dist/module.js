@@ -389,6 +389,7 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
       if (tableData[0].length === 0 || tableData[0][0][this.panel.tableColumn] === undefined) {
         data.value = null;
         this.setValueMapping(data);
+        if (!isNaN(parseFloat(data.valueFormatted))) data.value = parseFloat(data.valueFormatted);
         return;
       }
 

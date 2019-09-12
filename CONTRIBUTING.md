@@ -1,57 +1,82 @@
-Statistics Panel - External Grafana Plugin - CONTRIBUTING
+# Building Map Plugin
 
-## Install
+## Requirements
+- git
+- npm / yarn
 
-1. Clone or copy the repo to your grafana plugin folder.
+## Install process
 
-1. Confirm that you have data to use
+- Clone "statistics-plugin" from repo to the grafana plugins folder. (eg. grafana_data/plugins)
 
-    eg. Start kubectl to acquire data.
+- Install plugin package dependencies
+
+```sh
+$ npm install
+```
+or
+```
+$ yarn install
+```
+
+If you are using Docker, the two steps above can be done as follows:
+```
+# First cd into this plugin's folder.
+docker run -it --rm -v "$PWD":/usr/src/app -w /usr/src/app node:8 npm install
+docker run -it --rm -v "$PWD":/usr/src/app -w /usr/src/app node:8 yarn install
+```
+
+## Test / Run
+
+- clone the crated data source.
 
     ```sh
-    $ kubectl [--kubeconfig <path to config file>] port-forward --namespace prod crate-0 4200:4200 --address 0.0.0.0
+    $ sh get-crate-plugin.sh
     ```
 
-1. If using docker, start your docker container.
+- Start docker-compose.
 
     ```sh
     $ docker-compose up -d
     ```
 
-1. Config your plugin at grafana url
+Once the services are up and running, set-up the data as follows:
 
-Probably at dev, http://localhost:3000.
-
-## Development
-
-1. Clone project
-
-2. Go to the plugin location
+- Populate the database:
 
     ```sh
-    $ cd grafana/plugins/statistics_panel
+    $ sh create-table.sh
     ```
 
-3. Install lib dependencies with npm or yarn.
+- Set-up grafana:
 
     ```sh
-    $ yarn install
+    $ sh set-up-grafana.sh
     ```
 
-4. Make your changes
+**NOTE:** Unless you remove the docker volumes, you need to run the last two
+steps above only the first time)
 
-5. Build
+At this point in time login in grafana using admin/admin and you should be
+able to see a dashboard called `Dashboard`. If there is an error regarding
+the datasource metadata, just go to the `datasource` menu, open the datasource
+and click `save & test`.
 
-    ```sh
-    $ yarn build
-    ```
+## Other Tasks
 
-6. Start / Restart Grafana container
+- `Compile the code` + restart grafana
+```sh
+$ yarn build && docker-compose restart grafana
+```
 
-    ```sh
-    $ docker-compose restart grafana
-    ```
+Or using docker:
+```
+docker run -it --rm -v "$PWD":/usr/src/app -w /usr/src/app node:8 yarn build
+docker-compose restart grafana
+```
 
-## Other Info
+## Notes
 
-If you get permissions error, probably your user should have the group expected by grafana to avoid using sudo.
+Default start page url: http://localhost:3000
+Default user/pass is admin/admin.
+
+If you are trying to install packages and you get console permissions errors, it could be related with grafana changing owner from dist files.
