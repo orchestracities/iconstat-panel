@@ -314,6 +314,7 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
       }
 
       var data = {};
+
       if (dataList.length > 0 && dataList[0].type === 'table') {
         this.dataType = 'table';
         var tableData = dataList.map(this.tableHandler.bind(this));
@@ -386,6 +387,8 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
       }
 
       if (tableData[0].length === 0 || tableData[0][0][this.panel.tableColumn] === undefined) {
+        data.value = null;
+        this.setValueMapping(data);
         return;
       }
 
