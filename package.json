@@ -26,6 +26,6 @@
     "load-grunt-tasks": "^3.5.2"
   },
   "dependencies": {
-    "yarn": "^1.16.0"
+    "yarn": "^1.22.0"
   }
 }
