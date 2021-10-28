@@ -5,8 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.getColorForValue = exports.PanelCtrl = exports.StatisticsCtrl = undefined;
 
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
-
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _lodash = require('lodash');
@@ -121,14 +119,6 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
       },
       tableColumn: '',
       subtitle: 'NA',
-      orionURL: 'https://api.s.orchestracities.com/context',
-      fiwareService: 'default',
-      fiwareServicepath: '/',
-      entity: '',
-      entityField: '',
-      inputValue: 0,
-      maxValue: 100,
-      minValue: 0,
       iconType: '',
       iconPosition: '',
       allowActuation: false
@@ -146,43 +136,11 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
     _this.onSparklineColorChange = _this.onSparklineColorChange.bind(_this);
     _this.onSparklineFillChange = _this.onSparklineFillChange.bind(_this);
 
-    _this.handleClickActuation = _this.showActuationModal.bind(_this);
     _this.handleClickTitle = _this.showDetailsModal.bind(_this);
-    _this.handleSendToRemote = _this.sendToRemote.bind(_this);
-
-    _this.handleClickInput = _this.sendInputToOrion.bind(_this);
     return _this;
   }
 
   _createClass(StatisticsCtrl, [{
-    key: 'sendInputToOrion',
-    value: function sendInputToOrion() {
-      var url = this.panel.orionURL + '/v2/entities/' + this.panel.entity + '/attrs/?options=keyValues';
-      var data = {};
-      data[this.panel.entityField] = this.panel.inputValue;
-      var headers = {
-        'Content-Type': 'application/json',
-        'Fiware-Service': this.panel.fiwareService,
-        'Fiware-ServicePath': this.panel.fiwareServicepath
-      };
-      fetch(url, {
-        method: 'POST',
-        mode: 'cors', // no-cors, cors, *same-origin
-        body: JSON.stringify(data), // data can be `string` or {object}!
-        headers: new Headers(headers)
-      }).then(function (response) {
-        if (response.ok) {
-          console.info('Success:', response);
-        } else {
-          console.warn('Error:', error);
-          alert('An error has occured: failed to update');
-        }
-      }).catch(function (error) {
-        console.warn('Error:', error);
-        alert('An error has occured: failed to update');
-      });
-    }
-  }, {
     key: 'initModalValues',
     value: function initModalValues() {
       this.modal = {
@@ -198,29 +156,6 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
     key: 'initDetailModalValues',
     value: function initDetailModalValues() {
       this.modal = { values: this.getDetailsModalValues() };
-    }
-  }, {
-    key: 'showActuationModal',
-    value: function showActuationModal() {
-      if (!this.panel.allowActuation) return;
-
-      this.initModalValues();
-
-      var _processTargets = processTargets(this.panel.targets);
-
-      var _processTargets2 = _slicedToArray(_processTargets, 2);
-
-      this.modal.allowedEntities = _processTargets2[0];
-      this.modal.allowedTypes = _processTargets2[1];
-
-      var modalScope = this.$scope.$new();
-      modalScope.panel = this.panel;
-
-      this.publishAppEvent('show-modal', {
-        src: this.base_path + 'partials/modal_actuation.html',
-        modalClass: 'confirm-modal',
-        scope: modalScope
-      });
     }
   }, {
     key: 'showDetailsModal',
@@ -241,44 +176,6 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
     key: 'validFieldValues',
     value: function validFieldValues() {
       return this.modal.type.column !== undefined && this.modal.entity.value !== undefined && this.modal.value !== undefined && this.modal.value !== '';
-    }
-  }, {
-    key: 'sendToRemote',
-    value: function sendToRemote() {
-      this.modal.valid = this.validFieldValues();
-      if (!this.modal.valid) {
-        processResponse('warning', 'Please, choose or set all fields!');
-        return;
-      }
-
-      var url = this.panel.orionURL + '/v2/entities/' + this.modal.entity.value + '/attrs/?options=keyValues';
-      var data = {};
-      data[this.modal.type.column] = this.modal.value;
-      console.info(url);
-      console.info(data);
-      var headers = {
-        'Content-Type': 'application/json',
-        'Fiware-Service': this.panel.fiwareService,
-        'Fiware-ServicePath': this.panel.fiwareServicepath
-      };
-      fetch(url, {
-        method: 'POST',
-        mode: 'cors', // no-cors, cors, *same-origin
-        body: JSON.stringify(data), // data can be `string` or {object}!
-        headers: new Headers(headers)
-      }).then(function (response) {
-        if (response.ok) {
-          console.info('Success:', response);
-          processResponse('success', 'Successfuly updated!');
-        } else processResponse('warning', 'Error updating!');
-      }).catch(function (error) {
-        console.warn('Error:', error);
-        processResponse('warning', error);
-      });
-
-      function processResponse(type, msg) {
-        document.querySelector('.modal-content > .server-response').innerHTML = '<div class=\'alert alert-' + type + ' fade in alert-dismissible\'>' + msg + '</div>';
-      }
     }
   }, {
     key: 'onInitEditMode',
@@ -508,10 +405,10 @@ var StatisticsCtrl = function (_MetricsPanelCtrl) {
       console.log(this.series);
 
       if (this.series.length === 0) {
-        var _error = new Error();
-        _error.message = 'No Series Error';
-        _error.data = 'Metric query returns ' + this.series.length + ' series. Single Stat Panel expects a series.\n\nResponse:\n' + JSON.stringify(this.series);
-        throw _error;
+        var error = new Error();
+        error.message = 'No Series Error';
+        error.data = 'Metric query returns ' + this.series.length + ' series. Single Stat Panel expects a series.\n\nResponse:\n' + JSON.stringify(this.series);
+        throw error;
       }
 
       if (this.series && this.series.length > 0) {

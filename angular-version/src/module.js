@@ -872,14 +872,6 @@ class StatisticsCtrl extends MetricsPanelCtrl {
       },
       tableColumn: '',
       subtitle: 'NA',
-      orionURL: 'https://api.s.orchestracities.com/context',
-      fiwareService: 'default',
-      fiwareServicepath: '/',
-      entity: '',
-      entityField: '',
-      inputValue: 0,
-      maxValue: 100,
-      minValue: 0,
       iconType: '',
       iconPosition: '',
       allowActuation: false,
@@ -897,41 +889,9 @@ class StatisticsCtrl extends MetricsPanelCtrl {
     this.onSparklineColorChange = this.onSparklineColorChange.bind(this);
     this.onSparklineFillChange = this.onSparklineFillChange.bind(this);
 
-    this.handleClickActuation = this.showActuationModal.bind(this);
     this.handleClickTitle = this.showDetailsModal.bind(this);
-    this.handleSendToRemote = this.sendToRemote.bind(this);
-
-    this.handleClickInput = this.sendInputToOrion.bind(this);
   }
 
-  sendInputToOrion() {
-    let url = this.panel.orionURL + '/v2/entities/' + this.panel.entity + '/attrs/?options=keyValues'
-    let data = {}
-    data[this.panel.entityField] = this.panel.inputValue
-    const headers = {
-        'Content-Type': 'application/json',
-        'Fiware-Service': this.panel.fiwareService,
-        'Fiware-ServicePath': this.panel.fiwareServicepath
-      }
-    fetch(url, {
-      method: 'POST',
-      mode: 'cors', // no-cors, cors, *same-origin
-      body: JSON.stringify(data), // data can be `string` or {object}!
-      headers: new Headers(headers)
-    })
-    .then((response) => {
-      if(response.ok) {
-        console.info('Success:', response)
-      } else {
-        console.warn('Error:', error)
-        alert('An error has occured: failed to update')
-      }
-    })
-    .catch((error) => {
-      console.warn('Error:', error)
-      alert('An error has occured: failed to update')
-    })
-  }
 
   initModalValues() {
     this.modal = {
@@ -946,23 +906,6 @@ class StatisticsCtrl extends MetricsPanelCtrl {
 
   initDetailModalValues() {
     this.modal = { values: this.getDetailsModalValues() }
-  }
-
-  showActuationModal() {
-    if(!this.panel.allowActuation)
-      return ;
-
-    this.initModalValues();
-
-    [this.modal.allowedEntities, this.modal.allowedTypes] = processTargets(this.panel.targets)
-    let modalScope = this.$scope.$new();
-    modalScope.panel = this.panel;
-
-    this.publishAppEvent('show-modal', {
-      src: this.base_path+'partials/modal_actuation.html',
-      modalClass: 'confirm-modal',
-      scope: modalScope,
-    });
   }
 
   showDetailsModal() {
@@ -981,46 +924,6 @@ class StatisticsCtrl extends MetricsPanelCtrl {
 
   validFieldValues() {
     return (this.modal.type.column!==undefined && this.modal.entity.value!==undefined && this.modal.value!==undefined && this.modal.value!=='')
-  }
-
-  sendToRemote() {
-    this.modal.valid=this.validFieldValues()
-    if(!this.modal.valid) {
-      processResponse('warning', 'Please, choose or set all fields!')
-      return ;
-    }
-
-    let url = this.panel.orionURL + '/v2/entities/' + this.modal.entity.value + '/attrs/?options=keyValues'
-    let data = {}
-    data[this.modal.type.column] = this.modal.value
-    console.info(url)
-    console.info(data)
-    const headers = {
-        'Content-Type': 'application/json',
-        'Fiware-Service': this.panel.fiwareService,
-        'Fiware-ServicePath': this.panel.fiwareServicepath
-      }
-    fetch(url, {
-      method: 'POST',
-      mode: 'cors', // no-cors, cors, *same-origin
-      body: JSON.stringify(data), // data can be `string` or {object}!
-      headers: new Headers(headers)
-    })
-    .then((response) => {
-      if(response.ok) {
-        console.info('Success:', response)
-        processResponse('success', 'Successfuly updated!')
-      } else
-        processResponse('warning', 'Error updating!')
-    })
-    .catch((error) => {
-      console.warn('Error:', error)
-      processResponse('warning', error)
-    })
-
-    function processResponse(type, msg) {
-      document.querySelector('.modal-content > .server-response').innerHTML=`<div class='alert alert-${type} fade in alert-dismissible'>${msg}</div>`
-    }
   }
 
   onInitEditMode() {
