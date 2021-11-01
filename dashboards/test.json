@@ -319,7 +319,7 @@
                 "options": {
                     "colorMode": "value",
                     "graphMode": "area",
-                    "iconMode": "address-book",
+                    "iconMode": "value",
                     "justifyMode": "auto",
                     "orientation": "auto",
                     "reduceOptions": {

@@ -17,7 +17,7 @@ import {
   NumericRange,
   PanelProps,
 } from '@grafana/data';
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { config } from './config';
 import { StatPanelOptions } from './types';
 import { DataLinksContextMenuApi } from '@grafana/ui/components/DataLinks/DataLinksContextMenu';
@@ -125,20 +125,76 @@ export class StatPanel extends PureComponent<PanelProps<StatPanelOptions>> {
 
   render() {
     const { height, options, width, data, renderCounter } = this.props;
-
+    const style = {
+      gridContainer: {
+        display: 'grid',
+        gridTemplateColumns: 'auto auto auto auto',
+      },
+      subtitleContainer: {
+        display: 'block',
+        gridTemplateColumns: 'auto auto',
+      },
+      gridElement: {
+        margin: 'auto',
+        textAlign: 'center',
+        display: 'inline',
+        padding: '20px',
+      },
+      displaynone: {
+        display: 'none',
+      },
+      contentIconStyle: {
+        fontSize: '4rem',
+        display: options.iconDisplay === 'content' ? 'contents' : 'none',
+      },
+      titleIconStyle: {
+        fontSize: '2rem',
+        display: options.iconDisplay === 'title' ? 'contents' : 'none',
+      },
+      mainElement: {
+        textAlign: 'center',
+      },
+      prefix: {
+        fontSize: options.prefixFont,
+      },
+      postfix: {
+        fontSize: options.postfixFont,
+      },
+    };
     return (
-      <VizRepeater
-        getValues={this.getValues}
-        getAlignmentFactors={getDisplayValueAlignmentFactors}
-        renderValue={this.renderValue}
-        width={width}
-        height={height}
-        source={data}
-        itemSpacing={3}
-        renderCounter={renderCounter}
-        autoGrid={true}
-        orientation={options.orientation}
-      />
+      <div style={style.mainElement}>
+        <div style={style.subtitleContainer}>
+          <div style={style.gridElement}>
+            <i className={'fa fa-' + options.iconMode} style={style.titleIconStyle}></i>
+          </div>
+          <div style={style.gridElement}>{'  ' + options.subtitle}</div>
+        </div>
+
+        <div style={style.gridContainer}>
+          <div style={options.iconMode !== 'none' ? style.gridElement : style.displaynone}>
+            <i className={'fa fa-' + options.iconMode} style={style.contentIconStyle} />
+          </div>
+          <div style={options.prefix !== '' ? style.gridElement : style.displaynone}>
+            <h5 style={style.prefix}>{options.prefix}</h5>
+          </div>
+          <div style={style.gridElement}>
+            <VizRepeater
+              getValues={this.getValues}
+              getAlignmentFactors={getDisplayValueAlignmentFactors}
+              renderValue={this.renderValue}
+              width={400}
+              height={height - 100}
+              source={data}
+              itemSpacing={1}
+              renderCounter={renderCounter}
+              orientation={options.orientation}
+            />
+          </div>
+          <div style={options.postfix !== '' ? style.gridElement : style.displaynone}>
+            <h5 style={style.postfix}>{options.postfix}</h5>
+          </div>
+        </div>
+      </div>
     );
   }
 }

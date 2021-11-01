@@ -35,7 +35,7 @@ For more information about panels, refer to the documentation on [Panels](https:
 4. In case of changes to code to restart grafana
 
     ```bash
-    yarn build & docker-compose restart grafana
+    yarn dev && docker-compose restart grafana
     ```
 
 
