@@ -17,7 +17,6 @@ import {
   NumericRange,
   PanelProps,
 } from '@grafana/data';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { config } from './config';
 import { StatPanelOptions } from './types';
 import { DataLinksContextMenuApi } from '@grafana/ui/components/DataLinks/DataLinksContextMenu';
@@ -58,7 +57,9 @@ export class StatPanel extends PureComponent<PanelProps<StatPanelOptions>> {
       />
     );
   };
-
+  constructor(props: any) {
+    super(props);
+  }
   getTextMode() {
     const { options, fieldConfig, title } = this.props;
 
@@ -124,8 +125,9 @@ export class StatPanel extends PureComponent<PanelProps<StatPanelOptions>> {
   };
 
   render() {
-    const { height, options, width, data, renderCounter } = this.props;
-    const style = {
+    const { height, data, renderCounter } = this.props;
+    const options: any = this.props.options;
+    const style: any = {
       gridContainer: {
         display: 'grid',
         gridTemplateColumns: 'auto auto auto auto',
