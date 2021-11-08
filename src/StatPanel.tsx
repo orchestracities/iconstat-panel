@@ -30,31 +30,95 @@ export class StatPanel extends PureComponent<PanelProps<StatPanelOptions>> {
     valueProps: VizRepeaterRenderValueProps<FieldDisplay, DisplayValueAlignmentFactors>,
     menuProps: DataLinksContextMenuApi
   ): JSX.Element => {
-    const { timeRange, options } = this.props;
+    const { timeRange } = this.props;
     const { value, alignmentFactors, width, height, count } = valueProps;
     const { openMenu, targetClassName } = menuProps;
     let sparkline = value.sparkline;
     if (sparkline) {
       sparkline.timeRange = timeRange;
     }
-
+    const options: any = this.props.options;
+    const style: any = {
+      gridContainer: {
+        display: 'grid',
+        gridTemplateColumns: 'auto auto auto auto',
+      },
+      subtitleContainer: {
+        display: 'block',
+        gridTemplateColumns: 'auto auto',
+      },
+      gridElement: {
+        margin: 'auto',
+        textAlign: 'center',
+        display: 'inline',
+        padding: '20px',
+      },
+      gridSubtitle: {
+        margin: 'auto',
+        textAlign: 'center',
+        display: 'inline',
+      },
+      displaynone: {
+        display: 'none',
+      },
+      contentIconStyle: {
+        fontSize: '4rem',
+        display: options.iconDisplay === 'content' ? 'contents' : 'none',
+      },
+      titleIconStyle: {
+        fontSize: '2rem',
+        display: options.iconDisplay === 'title' ? 'contents' : 'none',
+      },
+      mainElement: {
+        textAlign: 'center',
+        width: width,
+      },
+      prefix: {
+        fontSize: options.prefixFont,
+      },
+      postfix: {
+        fontSize: options.postfixFont,
+      },
+    };
     return (
-      <BigValue
-        value={value.display}
-        count={count}
-        sparkline={sparkline}
-        colorMode={options.colorMode}
-        graphMode={options.graphMode}
-        justifyMode={options.justifyMode}
-        textMode={this.getTextMode()}
-        alignmentFactors={alignmentFactors}
-        text={options.text}
-        width={width}
-        height={height}
-        theme={config.theme2}
-        onClick={openMenu}
-        className={targetClassName}
-      />
+      <div style={style.mainElement}>
+        <div style={style.subtitleContainer}>
+          <div style={style.gridSubtitle}>
+            <i className={'fa fa-' + options.iconMode} style={style.titleIconStyle}></i>
+          </div>
+          <div style={style.gridSubtitle}>{' ' + options.subtitle}</div>
+        </div>
+
+        <div style={style.gridContainer}>
+          <div style={options.iconMode !== 'none' ? style.gridElement : style.displaynone}>
+            <i className={'fa fa-' + options.iconMode} style={style.contentIconStyle} />
+          </div>
+          <div style={options.prefix !== '' ? style.gridElement : style.displaynone}>
+            <h5 style={style.prefix}>{options.prefix}</h5>
+          </div>
+          <div style={style.gridElement}>
+            <BigValue
+              value={value.display}
+              count={count}
+              sparkline={sparkline}
+              colorMode={options.colorMode}
+              graphMode={options.graphMode}
+              justifyMode={options.justifyMode}
+              textMode={this.getTextMode()}
+              alignmentFactors={alignmentFactors}
+              text={options.text}
+              width={width - 300}
+              height={height}
+              theme={config.theme2}
+              onClick={openMenu}
+              className={targetClassName}
+            />
+          </div>
+          <div style={options.postfix !== '' ? style.gridElement : style.displaynone}>
+            <h5 style={style.postfix}>{options.postfix}</h5>
+          </div>
+        </div>
+      </div>
     );
   };
   constructor(props: any) {
@@ -125,78 +189,20 @@ export class StatPanel extends PureComponent<PanelProps<StatPanelOptions>> {
   };
 
   render() {
-    const { height, data, renderCounter } = this.props;
-    const options: any = this.props.options;
-    const style: any = {
-      gridContainer: {
-        display: 'grid',
-        gridTemplateColumns: 'auto auto auto auto',
-      },
-      subtitleContainer: {
-        display: 'block',
-        gridTemplateColumns: 'auto auto',
-      },
-      gridElement: {
-        margin: 'auto',
-        textAlign: 'center',
-        display: 'inline',
-        padding: '20px',
-      },
-      displaynone: {
-        display: 'none',
-      },
-      contentIconStyle: {
-        fontSize: '4rem',
-        display: options.iconDisplay === 'content' ? 'contents' : 'none',
-      },
-      titleIconStyle: {
-        fontSize: '2rem',
-        display: options.iconDisplay === 'title' ? 'contents' : 'none',
-      },
-      mainElement: {
-        textAlign: 'center',
-      },
-      prefix: {
-        fontSize: options.prefixFont,
-      },
-      postfix: {
-        fontSize: options.postfixFont,
-      },
-    };
-    return (
-      <div style={style.mainElement}>
-        <div style={style.subtitleContainer}>
-          <div style={style.gridElement}>
-            <i className={'fa fa-' + options.iconMode} style={style.titleIconStyle}></i>
-          </div>
-          <div style={style.gridElement}>{'  ' + options.subtitle}</div>
-        </div>
+    const { height, width, data, renderCounter, options } = this.props;
 
-        <div style={style.gridContainer}>
-          <div style={options.iconMode !== 'none' ? style.gridElement : style.displaynone}>
-            <i className={'fa fa-' + options.iconMode} style={style.contentIconStyle} />
-          </div>
-          <div style={options.prefix !== '' ? style.gridElement : style.displaynone}>
-            <h5 style={style.prefix}>{options.prefix}</h5>
-          </div>
-          <div style={style.gridElement}>
-            <VizRepeater
-              getValues={this.getValues}
-              getAlignmentFactors={getDisplayValueAlignmentFactors}
-              renderValue={this.renderValue}
-              width={400}
-              height={height - 100}
-              source={data}
-              itemSpacing={1}
-              renderCounter={renderCounter}
-              orientation={options.orientation}
-            />
-          </div>
-          <div style={options.postfix !== '' ? style.gridElement : style.displaynone}>
-            <h5 style={style.postfix}>{options.postfix}</h5>
-          </div>
-        </div>
-      </div>
+    return (
+      <VizRepeater
+        getValues={this.getValues}
+        getAlignmentFactors={getDisplayValueAlignmentFactors}
+        renderValue={this.renderValue}
+        width={width}
+        height={height}
+        source={data}
+        itemSpacing={1}
+        renderCounter={renderCounter}
+        orientation={options.orientation}
+      />
     );
   }
 }
