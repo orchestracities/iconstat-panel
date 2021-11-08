@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
 import {
-  BigValue,
   BigValueGraphMode,
   DataLinksContextMenu,
   VizRepeater,
@@ -19,6 +18,7 @@ import {
 } from '@grafana/data';
 import { config } from './config';
 import { StatPanelOptions } from './types';
+import { BigValueIcon } from './BigValueIcon';
 import { DataLinksContextMenuApi } from '@grafana/ui/components/DataLinks/DataLinksContextMenu';
 //import { findNumericFieldMinMax } from '@grafana/data/field/fieldOverrides';
 import { isNumber } from 'lodash';
@@ -37,7 +37,24 @@ export class StatPanel extends PureComponent<PanelProps<StatPanelOptions>> {
     if (sparkline) {
       sparkline.timeRange = timeRange;
     }
+
     const options: any = this.props.options;
+
+    let display = value.display;
+    // let icon = null;
+    // if (options.iconMode !== 'none') {
+    //   icon = 'fa fa-' + options.iconMode;
+    // }
+    // if (options.iconDisplay === 'content') {
+    //   display.text = '<i className=' + icon + '></i>' + '&nbsp;' + display.text;
+    // }
+    // if (options.prefix !== '') {
+    //   display.text = options.prefix + ' ' + display.text;
+    // }
+    // if (options.postfix !== '') {
+    //   display.text = display.text + ' ' + options.postfix;
+    // }
+
     const style: any = {
       gridContainer: {
         display: 'grid',
@@ -81,43 +98,28 @@ export class StatPanel extends PureComponent<PanelProps<StatPanelOptions>> {
       },
     };
     return (
-      <div style={style.mainElement}>
+      <div>
         <div style={style.subtitleContainer}>
-          <div style={style.gridSubtitle}>
-            <i className={'fa fa-' + options.iconMode} style={style.titleIconStyle}></i>
-          </div>
-          <div style={style.gridSubtitle}>{' ' + options.subtitle}</div>
+          <i className={'fa fa-' + options.iconMode} style={style.titleIconStyle}></i>
+          &nbsp;
+          <span style={style.gridSubtitle}>{' ' + options.subtitle}</span>
         </div>
-
-        <div style={style.gridContainer}>
-          <div style={options.iconMode !== 'none' ? style.gridElement : style.displaynone}>
-            <i className={'fa fa-' + options.iconMode} style={style.contentIconStyle} />
-          </div>
-          <div style={options.prefix !== '' ? style.gridElement : style.displaynone}>
-            <h5 style={style.prefix}>{options.prefix}</h5>
-          </div>
-          <div style={style.gridElement}>
-            <BigValue
-              value={value.display}
-              count={count}
-              sparkline={sparkline}
-              colorMode={options.colorMode}
-              graphMode={options.graphMode}
-              justifyMode={options.justifyMode}
-              textMode={this.getTextMode()}
-              alignmentFactors={alignmentFactors}
-              text={options.text}
-              width={width - 300}
-              height={height}
-              theme={config.theme2}
-              onClick={openMenu}
-              className={targetClassName}
-            />
-          </div>
-          <div style={options.postfix !== '' ? style.gridElement : style.displaynone}>
-            <h5 style={style.postfix}>{options.postfix}</h5>
-          </div>
-        </div>
+        <BigValueIcon
+          value={display}
+          count={count}
+          sparkline={sparkline}
+          colorMode={options.colorMode}
+          graphMode={options.graphMode}
+          justifyMode={options.justifyMode}
+          textMode={this.getTextMode()}
+          alignmentFactors={alignmentFactors}
+          text={options.text}
+          width={width}
+          height={height}
+          theme={config.theme2}
+          onClick={openMenu}
+          className={targetClassName}
+        />
       </div>
     );
   };
