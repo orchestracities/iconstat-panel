@@ -41,86 +41,28 @@ export class StatPanel extends PureComponent<PanelProps<StatPanelOptions>> {
     const options: any = this.props.options;
 
     let display = value.display;
-    // let icon = null;
-    // if (options.iconMode !== 'none') {
-    //   icon = 'fa fa-' + options.iconMode;
-    // }
-    // if (options.iconDisplay === 'content') {
-    //   display.text = '<i className=' + icon + '></i>' + '&nbsp;' + display.text;
-    // }
-    // if (options.prefix !== '') {
-    //   display.text = options.prefix + ' ' + display.text;
-    // }
-    // if (options.postfix !== '') {
-    //   display.text = display.text + ' ' + options.postfix;
-    // }
-
-    const style: any = {
-      gridContainer: {
-        display: 'grid',
-        gridTemplateColumns: 'auto auto auto auto',
-      },
-      subtitleContainer: {
-        display: 'block',
-        gridTemplateColumns: 'auto auto',
-      },
-      gridElement: {
-        margin: 'auto',
-        textAlign: 'center',
-        display: 'inline',
-        padding: '20px',
-      },
-      gridSubtitle: {
-        margin: 'auto',
-        textAlign: 'center',
-        display: 'inline',
-      },
-      displaynone: {
-        display: 'none',
-      },
-      contentIconStyle: {
-        fontSize: '4rem',
-        display: options.iconDisplay === 'content' ? 'contents' : 'none',
-      },
-      titleIconStyle: {
-        fontSize: '2rem',
-        display: options.iconDisplay === 'title' ? 'contents' : 'none',
-      },
-      mainElement: {
-        textAlign: 'center',
-        width: width,
-      },
-      prefix: {
-        fontSize: options.prefixFont,
-      },
-      postfix: {
-        fontSize: options.postfixFont,
-      },
-    };
     return (
-      <div>
-        <div style={style.subtitleContainer}>
-          <i className={'fa fa-' + options.iconMode} style={style.titleIconStyle}></i>
-          &nbsp;
-          <span style={style.gridSubtitle}>{' ' + options.subtitle}</span>
-        </div>
-        <BigValueIcon
-          value={display}
-          count={count}
-          sparkline={sparkline}
-          colorMode={options.colorMode}
-          graphMode={options.graphMode}
-          justifyMode={options.justifyMode}
-          textMode={this.getTextMode()}
-          alignmentFactors={alignmentFactors}
-          text={options.text}
-          width={width}
-          height={height}
-          theme={config.theme2}
-          onClick={openMenu}
-          className={targetClassName}
-        />
-      </div>
+      <BigValueIcon
+        value={display}
+        count={count}
+        sparkline={sparkline}
+        colorMode={options.colorMode}
+        graphMode={options.graphMode}
+        justifyMode={options.justifyMode}
+        textMode={this.getTextMode()}
+        alignmentFactors={alignmentFactors}
+        text={options.text}
+        width={width}
+        height={height}
+        theme={config.theme2}
+        onClick={openMenu}
+        className={targetClassName}
+        icon={options.icon}
+        iconPosition={options.iconPosition}
+        prefix={options.prefix}
+        suffix={options.suffix}
+        subtitle={options.subtitle}
+      />
     );
   };
   constructor(props: any) {

@@ -69,8 +69,16 @@ export abstract class BigValueIconLayout {
       lineHeight: LINE_HEIGHT,
     };
 
-    if (this.props.colorMode === BigValueColorMode.Background) {
-      styles.color = getTextColorForBackground(this.valueColor);
+    switch (this.props.colorMode) {
+      case BigValueColorMode.Value:
+        styles.color = this.valueColor;
+        break;
+      case BigValueColorMode.Background:
+        styles.color = getTextColorForBackground(this.valueColor);
+        break;
+      case BigValueColorMode.None:
+        styles.color = this.props.theme.colors.text.primary;
+        break;
     }
 
     return styles;
@@ -106,6 +114,7 @@ export abstract class BigValueIconLayout {
 
   getValueAndTitleContainerStyles() {
     const styles: CSSProperties = {
+      fontSize: this.valueFontSize,
       display: 'flex',
     };
 
@@ -113,6 +122,18 @@ export abstract class BigValueIconLayout {
       styles.alignItems = 'center';
       styles.justifyContent = 'center';
       styles.flexGrow = 1;
+    }
+
+    switch (this.props.colorMode) {
+      case BigValueColorMode.Value:
+        styles.color = this.valueColor;
+        break;
+      case BigValueColorMode.Background:
+        styles.color = getTextColorForBackground(this.valueColor);
+        break;
+      case BigValueColorMode.None:
+        styles.color = this.props.theme.colors.text.primary;
+        break;
     }
 
     return styles;
@@ -457,7 +478,7 @@ export interface BigValueTextValues extends DisplayValue {
 }
 
 function getTextValues(props: Props): BigValueTextValues {
-  const { value, alignmentFactors, count } = props;
+  const { value, alignmentFactors, count, prefix, suffix } = props;
   let { textMode } = props;
 
   const titleToAlignTo = alignmentFactors ? alignmentFactors.title : value.title;
@@ -484,6 +505,8 @@ function getTextValues(props: Props): BigValueTextValues {
       return {
         ...value,
         title: undefined,
+        prefix,
+        suffix,
         titleToAlignTo: undefined,
         valueToAlignTo,
         tooltip: value.title,
@@ -502,6 +525,8 @@ function getTextValues(props: Props): BigValueTextValues {
     default:
       return {
         ...value,
+        prefix,
+        suffix,
         titleToAlignTo,
         valueToAlignTo,
       };

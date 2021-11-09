@@ -15,12 +15,15 @@ import {
   PanelOptionsEditorBuilder,
 } from '@grafana/data';
 
+import { BigValueIconPosition } from './BigValueIcon';
+
 // Structure copied from angular
 export interface StatPanelOptions extends SingleStatBaseOptions {
   graphMode: BigValueGraphMode;
   colorMode: BigValueColorMode;
   justifyMode: BigValueJustifyMode;
   textMode: BigValueTextMode;
+  iconPosition: BigValueIconPosition;
 }
 
 export function addStandardDataReduceOptions<T extends SingleStatBaseOptions>(

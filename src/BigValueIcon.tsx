@@ -1,9 +1,10 @@
-import React from 'react';
 // Library
+import React, { PureComponent } from 'react';
 import { DisplayValue, DisplayValueAlignmentFactors, FieldSparkline, TextDisplayOptions } from '@grafana/data';
+import { IconName, IconLookup, IconDefinition, findIconDefinition } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import {
-  BigValue,
   BigValueGraphMode,
   BigValueColorMode,
   BigValueJustifyMode,
@@ -11,7 +12,14 @@ import {
   BigValueTextMode,
   Themeable2,
 } from '@grafana/ui';
+
 import { buildLayout } from './BigValueIconLayout';
+
+export enum BigValueIconPosition {
+  None = 'none',
+  Title = 'title',
+  Content = 'content',
+}
 
 export interface Props extends Themeable2 {
   /** Height of the component */
@@ -40,15 +48,24 @@ export interface Props extends Themeable2 {
   textMode?: BigValueTextMode;
   /** If true disables the tooltip */
   hasLinks?: boolean;
-
   /**
    * If part of a series of stat panes, this is the total number.
    * Used by BigValueTextMode.Auto text mode.
    */
   count?: number;
+  /** Icon */
+  icon?: string;
+  /** iconPosition */
+  iconPosition?: BigValueIconPosition;
+  /** Prefix */
+  prefix?: string;
+  /** iconPosition */
+  suffix?: string;
+  /** subtitle */
+  subtitle?: string;
 }
 
-export class BigValueIcon extends BigValue {
+export class BigValueIcon extends PureComponent<Props> {
   static defaultProps: Partial<Props> = {
     justifyMode: BigValueJustifyMode.Auto,
   };
@@ -65,14 +82,49 @@ export class BigValueIcon extends BigValue {
     // When there is an outer data link this tooltip will override the outer native tooltip
     const tooltip = hasLinks ? undefined : textValues.tooltip;
 
-    return (
-      <div className={className} style={panelStyles} onClick={onClick} title={tooltip}>
-        <div style={valueAndTitleContainerStyles}>
-          {textValues.title && <div style={titleStyles}>{textValues.title}</div>}
-          <FormattedValueDisplay value={textValues} style={valueStyles} />
+    const iconName = this.props.icon === undefined ? ('' as IconName) : (this.props.icon as IconName);
+
+    const iconLookup: IconLookup = { prefix: 'fas', iconName: iconName };
+    const iconDefinition: IconDefinition = findIconDefinition(iconLookup);
+
+    const title = this.props.subtitle === '' ? textValues.title : this.props.subtitle;
+
+    if (this.props.iconPosition === BigValueIconPosition.Title) {
+      return (
+        <div className={className} style={panelStyles} onClick={onClick} title={tooltip}>
+          <div style={valueAndTitleContainerStyles}>
+            {title && (
+              <div style={titleStyles}>
+                <FontAwesomeIcon icon={iconDefinition} />
+                {title}
+              </div>
+            )}
+            <FormattedValueDisplay value={textValues} style={valueStyles} />
+          </div>
+          {layout.renderChart()}
         </div>
-        {layout.renderChart()}
-      </div>
-    );
+      );
+    } else if (this.props.iconPosition === BigValueIconPosition.Content) {
+      return (
+        <div className={className} style={panelStyles} onClick={onClick} title={tooltip}>
+          <div style={valueAndTitleContainerStyles}>
+            {title && <div style={titleStyles}>{title}</div>}
+            <FontAwesomeIcon icon={iconDefinition} />
+            <FormattedValueDisplay value={textValues} style={valueStyles} />
+          </div>
+          {layout.renderChart()}
+        </div>
+      );
+    } else {
+      return (
+        <div className={className} style={panelStyles} onClick={onClick} title={tooltip}>
+          <div style={valueAndTitleContainerStyles}>
+            {title && <div style={titleStyles}>{title}</div>}
+            <FormattedValueDisplay value={textValues} style={valueStyles} />
+          </div>
+          {layout.renderChart()}
+        </div>
+      );
+    }
   }
 }
