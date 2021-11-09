@@ -8,11 +8,11 @@
         "slug": "test",
         "url": "/d/k7MTR4F7k/test",
         "expires": "0001-01-01T00:00:00Z",
-        "created": "2021-10-28T11:19:04Z",
-        "updated": "2021-10-28T16:13:37Z",
+        "created": "2021-10-28T19:59:53Z",
+        "updated": "2021-11-09T10:18:07Z",
         "updatedBy": "admin",
         "createdBy": "admin",
-        "version": 17,
+        "version": 29,
         "hasAcl": false,
         "isFolder": false,
         "folderId": 0,
@@ -43,10 +43,12 @@
             ]
         },
         "editable": true,
+        "fiscalYearStartMonth": 0,
         "gnetId": null,
         "graphTooltip": 0,
         "id": null,
         "links": [],
+        "liveNow": false,
         "panels": [
             {
                 "cacheTimeout": null,
@@ -69,7 +71,8 @@
                                     "value": 80
                                 }
                             ]
-                        }
+                        },
+                        "unit": "percent"
                     },
                     "overrides": []
                 },
@@ -96,9 +99,9 @@
                         "values": false
                     },
                     "text": {},
-                    "textMode": "auto"
+                    "textMode": "value"
                 },
-                "pluginVersion": "8.1.1",
+                "pluginVersion": "8.2.2",
                 "targets": [
                     {
                         "format": "time_series",
@@ -287,9 +290,11 @@
                 "fieldConfig": {
                     "defaults": {
                         "color": {
-                            "mode": "thresholds"
+                            "mode": "palette-classic"
                         },
                         "mappings": [],
+                        "max": 100,
+                        "min": 1,
                         "thresholds": {
                             "mode": "absolute",
                             "steps": [
@@ -302,14 +307,15 @@
                                     "value": 80
                                 }
                             ]
-                        }
+                        },
+                        "unit": "percent"
                     },
                     "overrides": []
                 },
                 "gridPos": {
-                    "h": 8,
+                    "h": 7,
                     "w": 12,
-                    "x": 12,
+                    "x": 0,
                     "y": 8
                 },
                 "id": 7,
@@ -319,9 +325,11 @@
                 "options": {
                     "colorMode": "value",
                     "graphMode": "area",
-                    "iconMode": "value",
-                    "justifyMode": "auto",
-                    "orientation": "auto",
+                    "icon": "address-book",
+                    "iconPosition": "content",
+                    "justifyMode": "center",
+                    "orientation": "horizontal",
+                    "prefix": "prefix",
                     "reduceOptions": {
                         "calcs": [
                             "mean"
@@ -329,8 +337,12 @@
                         "fields": "/^availablespotnumber$/",
                         "values": false
                     },
-                    "text": {},
-                    "textMode": "auto"
+                    "subtitle": "",
+                    "suffix": "suffix",
+                    "text": {
+                        "valueSize": 60
+                    },
+                    "textMode": "value"
                 },
                 "pluginVersion": "1.0.0",
                 "targets": [
@@ -381,7 +393,7 @@
             }
         ],
         "refresh": "",
-        "schemaVersion": 30,
+        "schemaVersion": 31,
         "style": "dark",
         "tags": [],
         "templating": {
@@ -395,6 +407,6 @@
         "timezone": "",
         "title": "test",
         "uid": "k7MTR4F7k",
-        "version": 17
+        "version": 29
     }
 }
