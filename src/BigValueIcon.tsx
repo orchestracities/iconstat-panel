@@ -96,6 +96,7 @@ export class BigValueIcon extends PureComponent<Props> {
             {title && (
               <div style={titleStyles}>
                 <FontAwesomeIcon icon={iconDefinition} />
+                &nbsp;
                 {title}
               </div>
             )}
@@ -110,6 +111,7 @@ export class BigValueIcon extends PureComponent<Props> {
           <div style={valueAndTitleContainerStyles}>
             {title && <div style={titleStyles}>{title}</div>}
             <FontAwesomeIcon icon={iconDefinition} />
+            &nbsp;
             <FormattedValueDisplay value={textValues} style={valueStyles} />
           </div>
           {layout.renderChart()}
