@@ -34,7 +34,7 @@ export abstract class BigValueIconLayout {
   maxTextHeight: number;
   textValues: BigValueTextValues;
 
-  constructor(private props: Props) {
+  constructor(public props: Props) {
     const { width, height, value, text } = props;
 
     this.valueColor = value.color ?? 'gray';
@@ -172,7 +172,7 @@ export abstract class BigValueIconLayout {
 
     if (this.justifyCenter) {
       panelStyles.alignItems = 'center';
-      panelStyles.flexDirection = 'row';
+      panelStyles.flexDirection = this.props.iconPosition === 'content' ? 'row' : 'column';
     }
 
     return panelStyles;
@@ -265,7 +265,7 @@ export class WideNoChartLayout extends BigValueIconLayout {
 
   getValueAndTitleContainerStyles() {
     const styles = super.getValueAndTitleContainerStyles();
-    styles.flexDirection = 'row';
+    styles.flexDirection = this.props.iconPosition === 'content' ? 'row' : 'column';
     styles.alignItems = 'center';
     styles.flexGrow = 1;
 
@@ -292,7 +292,6 @@ export class WideWithChartLayout extends BigValueIconLayout {
     super(props);
 
     const { width, height } = props;
-
     const chartHeightPercent = 0.5;
     const titleWidthPercent = 0.6;
     const valueWidthPercent = 1 - titleWidthPercent;
@@ -323,7 +322,7 @@ export class WideWithChartLayout extends BigValueIconLayout {
 
   getValueAndTitleContainerStyles() {
     const styles = super.getValueAndTitleContainerStyles();
-    styles.flexDirection = 'row';
+    styles.flexDirection = this.props.iconPosition === 'content' ? 'row' : 'column';
     styles.flexGrow = 1;
 
     if (!this.justifyCenter) {
@@ -335,7 +334,7 @@ export class WideWithChartLayout extends BigValueIconLayout {
 
   getPanelStyles() {
     const styles = super.getPanelStyles();
-    styles.flexDirection = 'row';
+    styles.flexDirection = this.props.iconPosition === 'content' ? 'row' : 'column';
     styles.justifyContent = 'space-between';
     return styles;
   }

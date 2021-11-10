@@ -1,5 +1,5 @@
 // Library
-import React, { PureComponent } from 'react';
+import React, { PureComponent, CSSProperties } from 'react';
 import { DisplayValue, DisplayValueAlignmentFactors, FieldSparkline, TextDisplayOptions } from '@grafana/data';
 import { IconName, IconLookup, IconDefinition, findIconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -77,6 +77,9 @@ export class BigValueIcon extends PureComponent<Props> {
     const valueAndTitleContainerStyles = layout.getValueAndTitleContainerStyles();
     const valueStyles = layout.getValueStyles();
     const titleStyles = layout.getTitleStyles();
+    let dataUnit = typeof this.props.value.suffix !== 'undefined' ? this.props.value.suffix : '';
+    let suffix = typeof layout.textValues.suffix !== 'undefined' ? layout.textValues.suffix : '';
+    layout.textValues.suffix = dataUnit + ' ' + suffix;
     const textValues = layout.textValues;
 
     // When there is an outer data link this tooltip will override the outer native tooltip
@@ -86,47 +89,35 @@ export class BigValueIcon extends PureComponent<Props> {
 
     const iconLookup: IconLookup = { prefix: 'fas', iconName: iconName };
     const iconDefinition: IconDefinition = findIconDefinition(iconLookup);
-
     const title = this.props.subtitle === '' ? textValues.title : this.props.subtitle;
+    const simpleTitleStyle: CSSProperties = {
+      margin: 'auto',
+      textAlign: 'center',
+      padding: '10px',
+    };
 
-    if (this.props.iconPosition === BigValueIconPosition.Title) {
-      return (
-        <div className={className} style={panelStyles} onClick={onClick} title={tooltip}>
+    return (
+      <div className={className} style={panelStyles} onClick={onClick} title={tooltip}>
+        {this.props.iconPosition === BigValueIconPosition.Title ? (
           <div style={valueAndTitleContainerStyles}>
-            {title && (
-              <div style={titleStyles}>
-                <FontAwesomeIcon icon={iconDefinition} />
-                &nbsp;
-                {title}
-              </div>
-            )}
+            <div style={titleStyles}>
+              <FontAwesomeIcon icon={iconDefinition} />
+              &nbsp;
+              {title}
+            </div>
             <FormattedValueDisplay value={textValues} style={valueStyles} />
           </div>
-          {layout.renderChart()}
-        </div>
-      );
-    } else if (this.props.iconPosition === BigValueIconPosition.Content) {
-      return (
-        <div className={className} style={panelStyles} onClick={onClick} title={tooltip}>
-          <div style={valueAndTitleContainerStyles}>
-            {title && <div style={titleStyles}>{title}</div>}
-            <FontAwesomeIcon icon={iconDefinition} />
-            &nbsp;
-            <FormattedValueDisplay value={textValues} style={valueStyles} />
+        ) : (
+          <div style={simpleTitleStyle}>
+            <div style={titleStyles}>{title}</div>
+            <div style={valueAndTitleContainerStyles}>
+              <FontAwesomeIcon icon={iconDefinition} /> <FormattedValueDisplay value={textValues} style={valueStyles} />
+            </div>
           </div>
-          {layout.renderChart()}
-        </div>
-      );
-    } else {
-      return (
-        <div className={className} style={panelStyles} onClick={onClick} title={tooltip}>
-          <div style={valueAndTitleContainerStyles}>
-            {title && <div style={titleStyles}>{title}</div>}
-            <FormattedValueDisplay value={textValues} style={valueStyles} />
-          </div>
-          {layout.renderChart()}
-        </div>
-      );
-    }
+        )}
+
+        {layout.renderChart()}
+      </div>
+    );
   }
 }

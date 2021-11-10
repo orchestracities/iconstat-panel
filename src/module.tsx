@@ -61,7 +61,6 @@ export const plugin = new PanelPlugin<StatPanelOptions>(StatPanel)
       category: mainCategory,
       settings: {
         options: [
-          { value: BigValueIconPosition.None, label: 'none' },
           { value: BigValueIconPosition.Content, label: 'content' },
           { value: BigValueIconPosition.Title, label: 'title' },
         ],
