@@ -70,7 +70,7 @@ export const plugin = new PanelPlugin<StatPanelOptions>(StatPanel)
     builder.addTextInput({
       path: 'subtitle',
       name: 'subtitle',
-      description: 'subtitle',
+      description: 'Custom title',
       category: mainCategory,
 
       defaultValue: '',
@@ -78,7 +78,7 @@ export const plugin = new PanelPlugin<StatPanelOptions>(StatPanel)
     builder.addTextInput({
       path: 'prefix',
       name: 'prefix',
-      description: 'prefix',
+      description: 'Custom prefix',
       category: mainCategory,
 
       defaultValue: '',
@@ -86,7 +86,7 @@ export const plugin = new PanelPlugin<StatPanelOptions>(StatPanel)
     builder.addTextInput({
       path: 'suffix',
       name: 'suffix',
-      description: 'suffix',
+      description: 'Custom suffix',
       category: mainCategory,
 
       defaultValue: '',

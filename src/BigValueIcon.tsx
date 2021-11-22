@@ -89,7 +89,7 @@ export class BigValueIcon extends PureComponent<Props> {
 
     const iconLookup: IconLookup = { prefix: 'fas', iconName: iconName };
     const iconDefinition: IconDefinition = findIconDefinition(iconLookup);
-    const title = this.props.subtitle === '' ? textValues.title : this.props.subtitle;
+    const title = this.props.subtitle ? this.props.subtitle : textValues.title;
     const simpleTitleStyle: CSSProperties = {
       margin: 'auto',
       textAlign: 'center',
@@ -111,7 +111,7 @@ export class BigValueIcon extends PureComponent<Props> {
           <div style={simpleTitleStyle}>
             <div style={titleStyles}>{title}</div>
             <div style={valueAndTitleContainerStyles}>
-              <FontAwesomeIcon icon={iconDefinition} /> <FormattedValueDisplay value={textValues} style={valueStyles} />
+              <FontAwesomeIcon icon={iconDefinition} />&nbsp;<FormattedValueDisplay value={textValues} style={valueStyles} />
             </div>
           </div>
         )}

@@ -3,6 +3,17 @@ This plugin extends Grafana Stat panel with icons support. More info at https://
 
 Icons supported are from [FontAwesome](https://fontawesome.com/)
 
+![Example](/example.png)
+
+Options available:
+- Icon selection
+- Icon position selection (title or value)
+- Custom title
+- Custom prefix
+- Custom suffix (will be combined with the unit if present)
+
+![Options](/options.png)
+
 ## What is Grafana Panel Plugin?
 
 Panels are the building blocks of Grafana. They allow you to visualize data in different ways. While Grafana has several types of panels already built-in, you can also build your own panel, to add support for other visualizations.
