@@ -6,12 +6,8 @@ services:
       - '3000:3000'
     volumes:
       - grafana-storage:/var/lib/grafana
-      - ./angular-version:/var/lib/grafana/plugins/statistics-panel/
       - .:/var/lib/grafana/plugins/oc-icon-stat-panel/
       - ./etc/grafana/grafana.ini:/etc/grafana/grafana.ini
-    environment:
-      - GF_SECURITY_ADMIN_USER=${GRAFANA_USERNAME}
-      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
     environment:
       - GF_SECURITY_ADMIN_USER=${GRAFANA_USERNAME}
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}

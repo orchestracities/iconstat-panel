@@ -1,1 +1,0 @@
-{"version":3,"sources":["../src/definitions.js"],"names":["PLUGIN_PATH","plugin_path"],"mappings":";;;;;AAAA,IAAMA,cAAc,kCAApB;;kBAEe;AACbC,eAAaD;AADA,C","file":"definitions.js","sourcesContent":["const PLUGIN_PATH = 'public/plugins/statistics-panel/'\n\nexport default {\n  plugin_path: PLUGIN_PATH\n};\n"]}
