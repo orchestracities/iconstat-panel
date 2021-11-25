@@ -21,10 +21,10 @@ export enum BigValueIconPosition {
 }
 
 export enum BigValueIconGraphMode {
-  None = "none",
-  Trend = "trend",
-  Line = "line",
-  Area = "area"
+  None = 'none',
+  Trend = 'trend',
+  Line = 'line',
+  Area = 'area',
 }
 
 export interface Props extends Themeable2 {
@@ -123,26 +123,34 @@ export class BigValueIcon extends PureComponent<Props> {
               &nbsp;
               {title}
             </div>
-            {this.props.graphMode ===  BigValueIconGraphMode.Trend ? (
+            {this.props.graphMode === BigValueIconGraphMode.Trend ? (
               <div style={flexDiv}>
-               <FormattedValueDisplay value={textValues} style={valueStyles} />&nbsp;<FontAwesomeIcon icon={iconTrendDefinition} />
+                <FormattedValueDisplay value={textValues} style={valueStyles} />
+                &nbsp;
+                <FontAwesomeIcon icon={iconTrendDefinition} />
               </div>
             ) : (
               <div style={flexDiv}>
-               <FormattedValueDisplay value={textValues} style={valueStyles} />
+                <FormattedValueDisplay value={textValues} style={valueStyles} />
               </div>
             )}
           </div>
         ) : (
           <div style={simpleTitleStyle}>
             <div style={titleStyles}>{title}</div>
-              {this.props.graphMode ===  BigValueIconGraphMode.Trend ? (
-                <div style={valueAndTitleContainerStyles}>
-                <FontAwesomeIcon icon={iconDefinition} />&nbsp;<FormattedValueDisplay value={textValues} style={valueStyles} />&nbsp;<FontAwesomeIcon icon={iconTrendDefinition} />
+            {this.props.graphMode === BigValueIconGraphMode.Trend ? (
+              <div style={valueAndTitleContainerStyles}>
+                <FontAwesomeIcon icon={iconDefinition} />
+                &nbsp;
+                <FormattedValueDisplay value={textValues} style={valueStyles} />
+                &nbsp;
+                <FontAwesomeIcon icon={iconTrendDefinition} />
               </div>
             ) : (
               <div style={valueAndTitleContainerStyles}>
-                <FontAwesomeIcon icon={iconDefinition} />&nbsp;<FormattedValueDisplay value={textValues} style={valueStyles} />
+                <FontAwesomeIcon icon={iconDefinition} />
+                &nbsp;
+                <FormattedValueDisplay value={textValues} style={valueStyles} />
               </div>
             )}
           </div>

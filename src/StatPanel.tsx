@@ -1,10 +1,5 @@
 import React, { PureComponent } from 'react';
-import {
-  DataLinksContextMenu,
-  VizRepeater,
-  VizRepeaterRenderValueProps,
-  BigValueTextMode,
-} from '@grafana/ui';
+import { DataLinksContextMenu, VizRepeater, VizRepeaterRenderValueProps, BigValueTextMode } from '@grafana/ui';
 import {
   DisplayValueAlignmentFactors,
   DataFrame,
@@ -40,18 +35,16 @@ export class StatPanel extends PureComponent<PanelProps<StatPanelOptions>> {
 
     if (value.view && value.view.dataFrame) {
       for (let field of value.view.dataFrame.fields) {
-        if(field.name != value.display.title){
+        if (field.name !== value.display.title) {
           continue;
         }
-        field.state && field.state.calcs && field.state.calcs.firstNotNull && field.state.calcs.lastNotNull ? trend = this.getTrendIcon(field.state.calcs.lastNotNull-field.state.calcs.firstNotNull) : undefined;
+        if (field.state && field.state.calcs && field.state.calcs.firstNotNull && field.state.calcs.lastNotNull) {
+          trend = this.getTrendIcon(field.state.calcs.lastNotNull - field.state.calcs.firstNotNull);
+        }
       }
     }
 
-
     const options: any = this.props.options;
-
-
-
 
     return (
       <BigValueIcon
@@ -146,12 +139,13 @@ export class StatPanel extends PureComponent<PanelProps<StatPanelOptions>> {
   };
 
   getTrendIcon = (trendIndicatorValue: number): string => {
-    if(trendIndicatorValue<0)
+    if (trendIndicatorValue < 0) {
       return 'arrow-down';
-    else if(trendIndicatorValue>0)
+    } else if (trendIndicatorValue > 0) {
       return 'arrow-up';
-    else
+    } else {
       return 'arrow-right';
+    }
   };
 
   render() {

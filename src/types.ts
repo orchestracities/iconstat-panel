@@ -1,9 +1,4 @@
-import {
-  SingleStatBaseOptions,
-  BigValueColorMode,
-  BigValueJustifyMode,
-  BigValueTextMode,
-} from '@grafana/ui';
+import { SingleStatBaseOptions, BigValueColorMode, BigValueJustifyMode, BigValueTextMode } from '@grafana/ui';
 import {
   ReducerID,
   standardEditorsRegistry,

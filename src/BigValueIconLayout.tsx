@@ -483,17 +483,24 @@ function getTextValues(props: Props): BigValueTextValues {
   let titleToAlignTo = alignmentFactors ? alignmentFactors.title : value.title;
   let valueToAlignTo = formattedValueToString(alignmentFactors ? alignmentFactors : value);
 
-  if(props.subtitle)
+  if (props.subtitle) {
     titleToAlignTo = props.subtitle;
+  }
 
-  if(props.icon && props.iconPosition === BigValueIconPosition.Title)
+  if (props.icon && props.iconPosition === BigValueIconPosition.Title) {
     titleToAlignTo = 'icon' + titleToAlignTo;
+  }
 
-  if(props.icon && props.iconPosition === BigValueIconPosition.Content)
+  if (props.icon && props.iconPosition === BigValueIconPosition.Content) {
     valueToAlignTo = 'icon' + valueToAlignTo;
+  }
 
-  if(prefix) valueToAlignTo = prefix + ' '+ valueToAlignTo;
-  if(suffix) valueToAlignTo = valueToAlignTo + ' ' + suffix ;
+  if (prefix) {
+    valueToAlignTo = prefix + ' ' + valueToAlignTo;
+  }
+  if (suffix) {
+    valueToAlignTo = valueToAlignTo + ' ' + suffix;
+  }
 
   // In the auto case we only show title if this big value is part of more panes (count > 1)
   if (textMode === BigValueTextMode.Auto && (count ?? 1) === 1) {
