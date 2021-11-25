@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.2.0
+- Migrate the plugin from Angular to React to increase compatibility with Grafana 7.x.
+
 ## 1.1.1
 - Handheld devices style improvement.
 
