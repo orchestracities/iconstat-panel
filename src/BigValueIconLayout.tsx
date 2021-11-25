@@ -15,7 +15,7 @@ import {
 } from '@grafana/ui';
 import { Sparkline } from './Sparkline';
 import { GraphDrawStyle, GraphFieldConfig } from '@grafana/schema';
-import { Props } from './BigValueIcon';
+import { Props, BigValueIconPosition } from './BigValueIcon';
 
 const LINE_HEIGHT = 1.2;
 const MAX_TITLE_SIZE = 30;
@@ -236,7 +236,7 @@ export class WideNoChartLayout extends BigValueIconLayout {
   constructor(props: Props) {
     super(props);
 
-    const valueWidthPercent = this.titleToAlignTo?.length ? 0.3 : 1.0;
+    const valueWidthPercent = this.titleToAlignTo?.length ? 0.6 : 1.0;
 
     if (this.valueToAlignTo.length) {
       // initial value size
@@ -293,7 +293,7 @@ export class WideWithChartLayout extends BigValueIconLayout {
 
     const { width, height } = props;
     const chartHeightPercent = 0.5;
-    const titleWidthPercent = 0.6;
+    const titleWidthPercent = 0.3;
     const valueWidthPercent = 1 - titleWidthPercent;
     const textHeightPercent = 0.4;
 
@@ -480,8 +480,20 @@ function getTextValues(props: Props): BigValueTextValues {
   const { value, alignmentFactors, count, prefix, suffix } = props;
   let { textMode } = props;
 
-  const titleToAlignTo = alignmentFactors ? alignmentFactors.title : value.title;
-  const valueToAlignTo = formattedValueToString(alignmentFactors ? alignmentFactors : value);
+  let titleToAlignTo = alignmentFactors ? alignmentFactors.title : value.title;
+  let valueToAlignTo = formattedValueToString(alignmentFactors ? alignmentFactors : value);
+
+  if(props.subtitle)
+    titleToAlignTo = props.subtitle;
+
+  if(props.icon && props.iconPosition === BigValueIconPosition.Title)
+    titleToAlignTo = 'icon' + titleToAlignTo;
+
+  if(props.icon && props.iconPosition === BigValueIconPosition.Content)
+    valueToAlignTo = 'icon' + valueToAlignTo;
+
+  if(prefix) valueToAlignTo = prefix + ' '+ valueToAlignTo;
+  if(suffix) valueToAlignTo = valueToAlignTo + ' ' + suffix ;
 
   // In the auto case we only show title if this big value is part of more panes (count > 1)
   if (textMode === BigValueTextMode.Auto && (count ?? 1) === 1) {

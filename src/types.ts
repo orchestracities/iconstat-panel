@@ -22,6 +22,10 @@ export interface StatPanelOptions extends SingleStatBaseOptions {
   justifyMode: BigValueJustifyMode;
   textMode: BigValueTextMode;
   iconPosition: BigValueIconPosition;
+  icon?: string;
+  prefix?: string;
+  suffix?: string;
+  subtitle?: string;
 }
 
 export function addStandardDataReduceOptions<T extends SingleStatBaseOptions>(
