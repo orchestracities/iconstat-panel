@@ -2,14 +2,14 @@
   "$schema": "https://raw.githubusercontent.com/grafana/grafana/master/docs/sources/developers/plugins/plugin.schema.json",
   "type": "panel",
   "name": "oc-icon-stat-panel",
-  "id": "oc-icon-stat-panel",
+  "id": "orchestracities-icon-stat-panel",
   "info": {
     "description": "",
     "author": {
-      "name": "Federico M. Facca",
-      "url": ""
+      "name": "Orchestra Cities",
+      "url": "https://github.com/orchestracities"
     },
-    "keywords": [],
+    "keywords": ["icons", "trend"],
     "logos": {
       "small": "img/icn-singlestat-panel.svg",
       "large": "img/icn-singlestat-panel.svg"
@@ -24,7 +24,7 @@
         "url": "https://github.com/orchestracities/statistics-panel/blob/master/LICENSE"
       }
     ],
-    "screenshots": [],
+    "screenshots": [{"name": "example", "path": "example.png"}],
     "version": "%VERSION%",
     "updated": "%TODAY%"
   },
