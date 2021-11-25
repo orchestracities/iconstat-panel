@@ -1,7 +1,6 @@
 import {
   SingleStatBaseOptions,
   BigValueColorMode,
-  BigValueGraphMode,
   BigValueJustifyMode,
   BigValueTextMode,
 } from '@grafana/ui';
@@ -14,12 +13,11 @@ import {
   VizOrientation,
   PanelOptionsEditorBuilder,
 } from '@grafana/data';
-
-import { BigValueIconPosition } from './BigValueIcon';
+import { BigValueIconGraphMode, BigValueIconPosition } from './BigValueIcon';
 
 // Structure copied from angular
 export interface StatPanelOptions extends SingleStatBaseOptions {
-  graphMode: BigValueGraphMode;
+  graphMode: BigValueIconGraphMode;
   colorMode: BigValueColorMode;
   justifyMode: BigValueJustifyMode;
   textMode: BigValueTextMode;

@@ -109,13 +109,14 @@ export const plugin = new PanelPlugin<StatPanelOptions>(StatPanel)
       .addRadio({
         path: 'graphMode',
         name: 'Graph mode',
-        description: 'Stat panel graph / sparkline mode',
+        description: 'Stat panel graph mode',
         category: mainCategory,
         defaultValue: 'area',
         settings: {
           options: [
             { value: 'none', label: 'None' },
             { value: 'area', label: 'Area' },
+            { value: 'trend', label: 'Trend' },
           ],
         },
       })

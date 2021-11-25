@@ -1,11 +1,11 @@
 import {
   sharedSingleStatPanelChangedHandler,
-  BigValueGraphMode,
   BigValueColorMode,
   BigValueTextMode,
 } from '@grafana/ui';
 import { FieldColorModeId, FieldConfigSource, PanelModel } from '@grafana/data';
 import { StatPanelOptions } from './types';
+import { BigValueIconGraphMode } from 'BigValueIcon';
 
 // This is called when the panel changes from another panel
 export const statPanelChangedHandler = (
@@ -20,9 +20,9 @@ export const statPanelChangedHandler = (
   if (prevOptions.angular && (prevPluginId === 'singlestat' || prevPluginId === 'grafana-singlestat-panel')) {
     const oldOptions = prevOptions.angular;
 
-    options.graphMode = BigValueGraphMode.None;
+    options.graphMode = BigValueIconGraphMode.None;
     if (oldOptions.sparkline && oldOptions.sparkline.show) {
-      options.graphMode = BigValueGraphMode.Area;
+      options.graphMode = BigValueIconGraphMode.Area;
     }
 
     if (oldOptions.colorBackground) {
@@ -31,7 +31,7 @@ export const statPanelChangedHandler = (
       options.colorMode = BigValueColorMode.Value;
     } else {
       options.colorMode = BigValueColorMode.None;
-      if (oldOptions.sparkline?.lineColor && options.graphMode === BigValueGraphMode.Area) {
+      if (oldOptions.sparkline?.lineColor && options.graphMode === BigValueIconGraphMode.Area) {
         const cfg: FieldConfigSource = panel.fieldConfig ?? {};
         cfg.defaults.color = {
           mode: FieldColorModeId.Fixed,

@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
 import {
-  BigValueGraphMode,
   DataLinksContextMenu,
   VizRepeater,
   VizRepeaterRenderValueProps,
@@ -18,7 +17,7 @@ import {
 } from '@grafana/data';
 import { config } from './config';
 import { StatPanelOptions } from './types';
-import { BigValueIcon } from './BigValueIcon';
+import { BigValueIconGraphMode, BigValueIcon } from './BigValueIcon';
 import { DataLinksContextMenuApi } from '@grafana/ui/components/DataLinks/DataLinksContextMenu';
 //import { findNumericFieldMinMax } from '@grafana/data/field/fieldOverrides';
 import { isNumber } from 'lodash';
@@ -34,17 +33,32 @@ export class StatPanel extends PureComponent<PanelProps<StatPanelOptions>> {
     const { value, alignmentFactors, width, height, count } = valueProps;
     const { openMenu, targetClassName } = menuProps;
     let sparkline = value.sparkline;
+    let trend = undefined;
     if (sparkline) {
       sparkline.timeRange = timeRange;
     }
 
+    if (value.view && value.view.dataFrame) {
+      for (let field of value.view.dataFrame.fields) {
+        if(field.name != value.display.title){
+          continue;
+        }
+        field.state && field.state.calcs && field.state.calcs.firstNotNull && field.state.calcs.lastNotNull ? trend = this.getTrendIcon(field.state.calcs.lastNotNull-field.state.calcs.firstNotNull) : undefined;
+      }
+    }
+
+
     const options: any = this.props.options;
+
+
+
 
     return (
       <BigValueIcon
         value={value.display}
         count={count}
         sparkline={sparkline}
+        trend={trend}
         colorMode={options.colorMode}
         graphMode={options.graphMode}
         justifyMode={options.justifyMode}
@@ -126,9 +140,18 @@ export class StatPanel extends PureComponent<PanelProps<StatPanelOptions>> {
       replaceVariables,
       theme: config.theme2,
       data: data.series,
-      sparkline: options.graphMode !== BigValueGraphMode.None,
+      sparkline: options.graphMode === BigValueIconGraphMode.Area,
       timeZone,
     });
+  };
+
+  getTrendIcon = (trendIndicatorValue: number): string => {
+    if(trendIndicatorValue<0)
+      return 'arrow-down';
+    else if(trendIndicatorValue>0)
+      return 'arrow-up';
+    else
+      return 'arrow-right';
   };
 
   render() {

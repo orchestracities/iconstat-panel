@@ -5,7 +5,6 @@ import { IconName, IconLookup, IconDefinition, findIconDefinition } from '@forta
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import {
-  BigValueGraphMode,
   BigValueColorMode,
   BigValueJustifyMode,
   FormattedValueDisplay,
@@ -21,6 +20,13 @@ export enum BigValueIconPosition {
   Content = 'content',
 }
 
+export enum BigValueIconGraphMode {
+  None = "none",
+  Trend = "trend",
+  Line = "line",
+  Area = "area"
+}
+
 export interface Props extends Themeable2 {
   /** Height of the component */
   height: number;
@@ -30,6 +36,8 @@ export interface Props extends Themeable2 {
   value: DisplayValue;
   /** Sparkline values for showing a graph under/behind the value  */
   sparkline?: FieldSparkline;
+  /** A arrow showing how if the value is increasing or decreasing */
+  trend?: string;
   /** onClick handler for the value */
   onClick?: React.MouseEventHandler<HTMLElement>;
   /** Custom styling */
@@ -37,7 +45,7 @@ export interface Props extends Themeable2 {
   /** Color mode for coloring the value or the background */
   colorMode: BigValueColorMode;
   /** Show a graph behind/under the value */
-  graphMode: BigValueGraphMode;
+  graphMode: BigValueIconGraphMode;
   /** Auto justify value and text or center it */
   justifyMode?: BigValueJustifyMode;
   /** Factors that should influence the positioning of the text  */
@@ -87,13 +95,23 @@ export class BigValueIcon extends PureComponent<Props> {
 
     const iconName = this.props.icon === undefined ? ('' as IconName) : (this.props.icon as IconName);
 
+    const trendIconName = this.props.trend === undefined ? ('' as IconName) : (this.props.trend as IconName);
+
     const iconLookup: IconLookup = { prefix: 'fas', iconName: iconName };
     const iconDefinition: IconDefinition = findIconDefinition(iconLookup);
+
+    const iconTrendLookup: IconLookup = { prefix: 'fas', iconName: trendIconName };
+    const iconTrendDefinition: IconDefinition = findIconDefinition(iconTrendLookup);
+
     const title = this.props.subtitle ? this.props.subtitle : textValues.title;
     const simpleTitleStyle: CSSProperties = {
       margin: 'auto',
       textAlign: 'center',
       padding: '10px',
+    };
+
+    const flexDiv: CSSProperties = {
+      display: 'flex',
     };
 
     return (
@@ -105,14 +123,28 @@ export class BigValueIcon extends PureComponent<Props> {
               &nbsp;
               {title}
             </div>
-            <FormattedValueDisplay value={textValues} style={valueStyles} />
+            {this.props.graphMode ===  BigValueIconGraphMode.Trend ? (
+              <div style={flexDiv}>
+               <FormattedValueDisplay value={textValues} style={valueStyles} />&nbsp;<FontAwesomeIcon icon={iconTrendDefinition} />
+              </div>
+            ) : (
+              <div style={flexDiv}>
+               <FormattedValueDisplay value={textValues} style={valueStyles} />
+              </div>
+            )}
           </div>
         ) : (
           <div style={simpleTitleStyle}>
             <div style={titleStyles}>{title}</div>
-            <div style={valueAndTitleContainerStyles}>
-              <FontAwesomeIcon icon={iconDefinition} />&nbsp;<FormattedValueDisplay value={textValues} style={valueStyles} />
-            </div>
+              {this.props.graphMode ===  BigValueIconGraphMode.Trend ? (
+                <div style={valueAndTitleContainerStyles}>
+                <FontAwesomeIcon icon={iconDefinition} />&nbsp;<FormattedValueDisplay value={textValues} style={valueStyles} />&nbsp;<FontAwesomeIcon icon={iconTrendDefinition} />
+              </div>
+            ) : (
+              <div style={valueAndTitleContainerStyles}>
+                <FontAwesomeIcon icon={iconDefinition} />&nbsp;<FormattedValueDisplay value={textValues} style={valueStyles} />
+              </div>
+            )}
           </div>
         )}
 
