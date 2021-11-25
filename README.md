@@ -11,6 +11,7 @@ Options available:
 - Custom title
 - Custom prefix
 - Custom suffix (will be combined with the unit if present)
+- Trend (it displays an arrow showing the trend of the data)
 
 ![Options](/options.png)
 
