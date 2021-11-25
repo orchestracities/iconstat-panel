@@ -1,0 +1,499 @@
+{
+    "meta": {
+        "type": "db",
+        "canSave": true,
+        "canEdit": true,
+        "canAdmin": true,
+        "canStar": true,
+        "slug": "demo",
+        "url": "/d/-2-OkStnz/demo",
+        "expires": "0001-01-01T00:00:00Z",
+        "created": "2021-11-22T16:53:32Z",
+        "updated": "2021-11-22T17:24:23Z",
+        "updatedBy": "admin",
+        "createdBy": "admin",
+        "version": 13,
+        "hasAcl": false,
+        "isFolder": false,
+        "folderId": 0,
+        "folderUid": "",
+        "folderTitle": "General",
+        "folderUrl": "",
+        "provisioned": false,
+        "provisionedExternalId": ""
+    },
+    "dashboard": {
+        "annotations": {
+            "list": [
+                {
+                    "builtIn": 1,
+                    "datasource": "-- Grafana --",
+                    "enable": true,
+                    "hide": true,
+                    "iconColor": "rgba(0, 211, 255, 1)",
+                    "name": "Annotations & Alerts",
+                    "target": {
+                        "limit": 100,
+                        "matchAny": false,
+                        "tags": [],
+                        "type": "dashboard"
+                    },
+                    "type": "dashboard"
+                }
+            ]
+        },
+        "editable": true,
+        "fiscalYearStartMonth": 0,
+        "gnetId": null,
+        "graphTooltip": 0,
+        "id": null,
+        "links": [],
+        "liveNow": false,
+        "panels": [
+            {
+                "cacheTimeout": null,
+                "datasource": "cratedb",
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "palette-classic"
+                        },
+                        "mappings": [],
+                        "max": 100,
+                        "min": 1,
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "green",
+                                    "value": null
+                                },
+                                {
+                                    "color": "red",
+                                    "value": 80
+                                }
+                            ]
+                        },
+                        "unit": "percent"
+                    },
+                    "overrides": []
+                },
+                "gridPos": {
+                    "h": 7,
+                    "w": 12,
+                    "x": 0,
+                    "y": 0
+                },
+                "id": 7,
+                "interval": null,
+                "links": [],
+                "maxDataPoints": 100,
+                "options": {
+                    "colorMode": "value",
+                    "graphMode": "area",
+                    "icon": "address-book",
+                    "iconPosition": "content",
+                    "justifyMode": "center",
+                    "orientation": "horizontal",
+                    "prefix": "prefix",
+                    "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "/^availablespotnumber$/",
+                        "values": false
+                    },
+                    "subtitle": "",
+                    "suffix": "suffix",
+                    "text": {
+                        "valueSize": 60
+                    },
+                    "textMode": "value"
+                },
+                "pluginVersion": "1.0.0",
+                "targets": [
+                    {
+                        "format": "time_series",
+                        "group": [
+                            {
+                                "params": [
+                                    "$__interval",
+                                    "none"
+                                ],
+                                "type": "time"
+                            }
+                        ],
+                        "metricColumn": "none",
+                        "rawQuery": false,
+                        "rawSql": "SELECT\n  $__timeGroupAlias(time_index,$__interval),\n  avg(availablespotnumber) AS \"availablespotnumber\"\nFROM doc.example\nGROUP BY 1\nORDER BY 1",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "availablespotnumber"
+                                    ],
+                                    "type": "column"
+                                },
+                                {
+                                    "params": [
+                                        "avg"
+                                    ],
+                                    "type": "aggregate"
+                                },
+                                {
+                                    "params": [
+                                        "availablespotnumber"
+                                    ],
+                                    "type": "alias"
+                                }
+                            ]
+                        ],
+                        "table": "doc.example",
+                        "timeColumn": "time_index",
+                        "where": []
+                    }
+                ],
+                "title": "Demo 1",
+                "type": "oc-icon-stat-panel"
+            },
+            {
+                "cacheTimeout": null,
+                "datasource": "cratedb",
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "palette-classic"
+                        },
+                        "mappings": [],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "green",
+                                    "value": null
+                                },
+                                {
+                                    "color": "red",
+                                    "value": 80
+                                }
+                            ]
+                        },
+                        "unit": "percent"
+                    },
+                    "overrides": []
+                },
+                "gridPos": {
+                    "h": 7,
+                    "w": 12,
+                    "x": 12,
+                    "y": 0
+                },
+                "id": 8,
+                "interval": null,
+                "links": [],
+                "maxDataPoints": 100,
+                "options": {
+                    "colorMode": "none",
+                    "graphMode": "area",
+                    "icon": "address-book",
+                    "iconPosition": "title",
+                    "justifyMode": "center",
+                    "orientation": "horizontal",
+                    "prefix": "prefix",
+                    "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "/^availablespotnumber$/",
+                        "values": false
+                    },
+                    "subtitle": "",
+                    "suffix": "suffix",
+                    "text": {
+                        "titleSize": 40,
+                        "valueSize": 60
+                    },
+                    "textMode": "value_and_name"
+                },
+                "pluginVersion": "1.0.0",
+                "targets": [
+                    {
+                        "format": "time_series",
+                        "group": [
+                            {
+                                "params": [
+                                    "$__interval",
+                                    "none"
+                                ],
+                                "type": "time"
+                            }
+                        ],
+                        "metricColumn": "none",
+                        "rawQuery": false,
+                        "rawSql": "SELECT\n  $__timeGroupAlias(time_index,$__interval),\n  avg(availablespotnumber) AS \"availablespotnumber\"\nFROM doc.example\nGROUP BY 1\nORDER BY 1",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "availablespotnumber"
+                                    ],
+                                    "type": "column"
+                                },
+                                {
+                                    "params": [
+                                        "avg"
+                                    ],
+                                    "type": "aggregate"
+                                },
+                                {
+                                    "params": [
+                                        "availablespotnumber"
+                                    ],
+                                    "type": "alias"
+                                }
+                            ]
+                        ],
+                        "table": "doc.example",
+                        "timeColumn": "time_index",
+                        "where": []
+                    }
+                ],
+                "title": "Demo 2",
+                "type": "oc-icon-stat-panel"
+            },
+            {
+                "cacheTimeout": null,
+                "datasource": "cratedb",
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "palette-classic"
+                        },
+                        "mappings": [],
+                        "max": 100,
+                        "min": 1,
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "green",
+                                    "value": null
+                                },
+                                {
+                                    "color": "red",
+                                    "value": 80
+                                }
+                            ]
+                        },
+                        "unit": "percent"
+                    },
+                    "overrides": []
+                },
+                "gridPos": {
+                    "h": 7,
+                    "w": 12,
+                    "x": 0,
+                    "y": 7
+                },
+                "id": 9,
+                "interval": null,
+                "links": [],
+                "maxDataPoints": 100,
+                "options": {
+                    "colorMode": "none",
+                    "graphMode": "area",
+                    "icon": "briefcase-medical",
+                    "iconPosition": "title",
+                    "justifyMode": "center",
+                    "orientation": "horizontal",
+                    "prefix": "prefix",
+                    "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "/^availablespotnumber$/",
+                        "values": false
+                    },
+                    "subtitle": "my title",
+                    "suffix": "suffix",
+                    "text": {
+                        "titleSize": 30,
+                        "valueSize": 60
+                    },
+                    "textMode": "value"
+                },
+                "pluginVersion": "1.0.0",
+                "targets": [
+                    {
+                        "format": "time_series",
+                        "group": [
+                            {
+                                "params": [
+                                    "$__interval",
+                                    "none"
+                                ],
+                                "type": "time"
+                            }
+                        ],
+                        "metricColumn": "none",
+                        "rawQuery": false,
+                        "rawSql": "SELECT\n  $__timeGroupAlias(time_index,$__interval),\n  avg(availablespotnumber) AS \"availablespotnumber\"\nFROM doc.example\nGROUP BY 1\nORDER BY 1",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "availablespotnumber"
+                                    ],
+                                    "type": "column"
+                                },
+                                {
+                                    "params": [
+                                        "avg"
+                                    ],
+                                    "type": "aggregate"
+                                },
+                                {
+                                    "params": [
+                                        "availablespotnumber"
+                                    ],
+                                    "type": "alias"
+                                }
+                            ]
+                        ],
+                        "table": "doc.example",
+                        "timeColumn": "time_index",
+                        "where": []
+                    }
+                ],
+                "title": "Demo 3",
+                "type": "oc-icon-stat-panel"
+            },
+            {
+                "cacheTimeout": null,
+                "datasource": "cratedb",
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "palette-classic"
+                        },
+                        "mappings": [],
+                        "max": 100,
+                        "min": 1,
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "green",
+                                    "value": null
+                                },
+                                {
+                                    "color": "red",
+                                    "value": 80
+                                }
+                            ]
+                        },
+                        "unit": "none"
+                    },
+                    "overrides": []
+                },
+                "gridPos": {
+                    "h": 7,
+                    "w": 12,
+                    "x": 12,
+                    "y": 7
+                },
+                "id": 10,
+                "interval": null,
+                "links": [],
+                "maxDataPoints": 100,
+                "options": {
+                    "colorMode": "value",
+                    "graphMode": "area",
+                    "icon": "address-book",
+                    "iconPosition": "content",
+                    "justifyMode": "center",
+                    "orientation": "horizontal",
+                    "prefix": "prefix",
+                    "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "/^availablespotnumber$/",
+                        "values": false
+                    },
+                    "subtitle": "",
+                    "suffix": "suffix",
+                    "text": {
+                        "valueSize": 60
+                    },
+                    "textMode": "value_and_name"
+                },
+                "pluginVersion": "1.0.0",
+                "targets": [
+                    {
+                        "format": "time_series",
+                        "group": [
+                            {
+                                "params": [
+                                    "$__interval",
+                                    "none"
+                                ],
+                                "type": "time"
+                            }
+                        ],
+                        "metricColumn": "none",
+                        "rawQuery": false,
+                        "rawSql": "SELECT\n  $__timeGroupAlias(time_index,$__interval),\n  avg(availablespotnumber) AS \"availablespotnumber\"\nFROM doc.example\nGROUP BY 1\nORDER BY 1",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "availablespotnumber"
+                                    ],
+                                    "type": "column"
+                                },
+                                {
+                                    "params": [
+                                        "avg"
+                                    ],
+                                    "type": "aggregate"
+                                },
+                                {
+                                    "params": [
+                                        "availablespotnumber"
+                                    ],
+                                    "type": "alias"
+                                }
+                            ]
+                        ],
+                        "table": "doc.example",
+                        "timeColumn": "time_index",
+                        "where": []
+                    }
+                ],
+                "title": "Demo 4",
+                "type": "oc-icon-stat-panel"
+            }
+        ],
+        "refresh": "",
+        "schemaVersion": 31,
+        "style": "dark",
+        "tags": [],
+        "templating": {
+            "list": []
+        },
+        "time": {
+            "from": "2019-02-23T23:00:00.000Z",
+            "to": "2019-03-10T22:59:59.000Z"
+        },
+        "timepicker": {},
+        "timezone": "",
+        "title": "Demo",
+        "uid": "-2-OkStnz",
+        "version": 13
+    }
+}

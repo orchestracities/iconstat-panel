@@ -1,0 +1,24 @@
+{
+  "type": "panel",
+  "name": "Statistics Panel",
+  "id": "statistics-panel",
+
+  "info": {
+    "description": "Statistics Panel for Grafana",
+    "author": {
+      "name": "Ubiwhere",
+      "url": "https://www.ubiwhere.com"
+    },
+    "logos": {
+      "small": "img/icn-statistics-panel.svg",
+      "large": "img/icn-statistics-panel.svg"
+    },
+    "version": "1.1.1",
+    "updated": "2018-12-06"
+  },
+  "dependencies": {
+    "grafanaVersion": "5.x.x",
+    "plugins": [ ]
+  }
+}
+

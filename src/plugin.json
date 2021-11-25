@@ -1,24 +1,35 @@
 {
+  "$schema": "https://raw.githubusercontent.com/grafana/grafana/master/docs/sources/developers/plugins/plugin.schema.json",
   "type": "panel",
-  "name": "Statistics Panel",
-  "id": "statistics-panel",
-
+  "name": "oc-icon-stat-panel",
+  "id": "oc-icon-stat-panel",
   "info": {
-    "description": "Statistics Panel for Grafana",
+    "description": "",
     "author": {
-      "name": "Ubiwhere",
-      "url": "https://www.ubiwhere.com"
+      "name": "Federico M. Facca",
+      "url": ""
     },
+    "keywords": [],
     "logos": {
-      "small": "img/icn-statistics-panel.svg",
-      "large": "img/icn-statistics-panel.svg"
+      "small": "img/icn-singlestat-panel.svg",
+      "large": "img/icn-singlestat-panel.svg"
     },
-    "version": "1.1.1",
-    "updated": "2018-12-06"
+    "links": [
+      {
+        "name": "Website",
+        "url": "https://github.com/orchestracities/statistics-panel/"
+      },
+      {
+        "name": "License",
+        "url": "https://github.com/orchestracities/statistics-panel/blob/master/LICENSE"
+      }
+    ],
+    "screenshots": [],
+    "version": "%VERSION%",
+    "updated": "%TODAY%"
   },
   "dependencies": {
-    "grafanaVersion": "5.x.x",
-    "plugins": [ ]
+    "grafanaDependency": ">=7.0.0",
+    "plugins": []
   }
 }
-
