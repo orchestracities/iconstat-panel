@@ -76,7 +76,7 @@ jobs:
           args: buildAll
 
       - name: Sign plugin
-        run: yarn sign --rootUrls ${{ secrets.ROOT_URLS }}
+        run: yarn sign --rootUrls ${ROOT_URLS}
         env:
           GRAFANA_API_KEY: ${{ secrets.GRAFANA_API_KEY }} # Requires a Grafana API key from Grafana.com.
           ROOT_URLS: ${{ secrets.ROOT_URLS }} # List of urls to use to sign plugin
