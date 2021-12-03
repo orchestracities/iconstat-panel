@@ -119,7 +119,8 @@ jobs:
 
       - name: Lint plugin
         run: |
-          git clone --depth 1 --branch v0.6.2 https://github.com/grafana/plugin-validator
+          git clone https://github.com/grafana/plugin-validator
+          git checkout a36fe1f22e6ae16a30825e3e54ec36e503a42559
           pushd ./plugin-validator/pkg/cmd/plugincheck2
           go install
           popd
