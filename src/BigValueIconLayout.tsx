@@ -383,14 +383,14 @@ export class StackedWithChartLayout extends BigValueIconLayout {
 
   getValueAndTitleContainerStyles() {
     const styles = super.getValueAndTitleContainerStyles();
-    styles.flexDirection = 'column';
+    styles.flexDirection = this.props.iconPosition === 'content' ? 'row' : 'column';
     styles.justifyContent = 'center';
     return styles;
   }
 
   getPanelStyles() {
     const styles = super.getPanelStyles();
-    styles.flexDirection = 'column';
+    styles.flexDirection = this.props.iconPosition === 'content' ? 'row' : 'column';
     return styles;
   }
 }
@@ -430,7 +430,7 @@ export class StackedWithNoChartLayout extends BigValueIconLayout {
 
   getValueAndTitleContainerStyles() {
     const styles = super.getValueAndTitleContainerStyles();
-    styles.flexDirection = 'column';
+    styles.flexDirection = this.props.iconPosition === 'content' ? 'row' : 'column';
     styles.flexGrow = 1;
     return styles;
   }

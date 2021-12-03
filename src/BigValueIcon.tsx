@@ -113,14 +113,15 @@ export class BigValueIcon extends PureComponent<Props> {
     const flexDiv: CSSProperties = {
       display: 'flex',
     };
-
+    const icon: CSSProperties = {
+      marginRight: '2px',
+    };
     return (
       <div className={className} style={panelStyles} onClick={onClick} title={tooltip}>
         {this.props.iconPosition === BigValueIconPosition.Title ? (
           <div style={valueAndTitleContainerStyles}>
             <div style={titleStyles}>
-              <FontAwesomeIcon icon={iconDefinition} />
-              &nbsp;
+              <FontAwesomeIcon icon={iconDefinition} style={icon} />
               {title}
             </div>
             {this.props.graphMode === BigValueIconGraphMode.Trend ? (
@@ -140,16 +141,14 @@ export class BigValueIcon extends PureComponent<Props> {
             <div style={titleStyles}>{title}</div>
             {this.props.graphMode === BigValueIconGraphMode.Trend ? (
               <div style={valueAndTitleContainerStyles}>
-                <FontAwesomeIcon icon={iconDefinition} />
-                &nbsp;
+                <FontAwesomeIcon icon={iconDefinition} style={icon} />
                 <FormattedValueDisplay value={textValues} style={valueStyles} />
                 &nbsp;
                 <FontAwesomeIcon icon={iconTrendDefinition} />
               </div>
             ) : (
               <div style={valueAndTitleContainerStyles}>
-                <FontAwesomeIcon icon={iconDefinition} />
-                &nbsp;
+                <FontAwesomeIcon icon={iconDefinition} style={icon} />
                 <FormattedValueDisplay value={textValues} style={valueStyles} />
               </div>
             )}
