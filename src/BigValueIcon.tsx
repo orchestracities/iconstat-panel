@@ -71,6 +71,7 @@ export interface Props extends Themeable2 {
   suffix?: string;
   /** subtitle */
   subtitle?: string;
+  state?: any;
 }
 
 export class BigValueIcon extends PureComponent<Props> {
@@ -81,6 +82,7 @@ export class BigValueIcon extends PureComponent<Props> {
   render() {
     const { onClick, className, hasLinks } = this.props;
     const layout = buildLayout(this.props);
+    const queryState = this.props.state;
     const panelStyles = layout.getPanelStyles();
     const valueAndTitleContainerStyles = layout.getValueAndTitleContainerStyles();
     const valueStyles = layout.getValueStyles();
@@ -116,12 +118,12 @@ export class BigValueIcon extends PureComponent<Props> {
     const icon: CSSProperties = {
       marginRight: '2px',
     };
-    if (textValues.numeric <= 0) {
-      textValues.color = '#181b1f';
-      panelStyles.background = '#181b1f';
-      valueStyles.color = '#F8F8FF';
-      titleStyles.color = '#F8F8FF';
-      valueAndTitleContainerStyles.color = '#F8F8FF';
+    if (queryState !== 'Done') {
+      textValues.color = this.props.theme.colors.background.primary;
+      panelStyles.background = this.props.theme.colors.background.primary;
+      valueStyles.color = this.props.theme.colors.text.maxContrast;
+      titleStyles.color = this.props.theme.colors.text.maxContrast;
+      valueAndTitleContainerStyles.color = this.props.theme.colors.text.maxContrast;
     }
 
     return (

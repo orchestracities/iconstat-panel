@@ -45,13 +45,14 @@ export class StatPanel extends PureComponent<PanelProps<StatPanelOptions>> {
     }
 
     const options: any = this.props.options;
-
+    const state: any = this.props.data.state;
     return (
       <BigValueIcon
         value={value.display}
         count={count}
         sparkline={sparkline}
         trend={trend}
+        state={state}
         colorMode={options.colorMode}
         graphMode={options.graphMode}
         justifyMode={options.justifyMode}
