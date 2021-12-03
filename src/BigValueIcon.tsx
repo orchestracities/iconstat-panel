@@ -116,6 +116,14 @@ export class BigValueIcon extends PureComponent<Props> {
     const icon: CSSProperties = {
       marginRight: '2px',
     };
+    if (textValues.numeric <= 0) {
+      textValues.color = '#181b1f';
+      panelStyles.background = '#181b1f';
+      valueStyles.color = '#F8F8FF';
+      titleStyles.color = '#F8F8FF';
+      valueAndTitleContainerStyles.color = '#F8F8FF';
+    }
+
     return (
       <div className={className} style={panelStyles} onClick={onClick} title={tooltip}>
         {this.props.iconPosition === BigValueIconPosition.Title ? (
