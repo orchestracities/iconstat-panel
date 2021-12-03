@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.1
+- Fix spaces between icon and values
+- In case of no value use no color style
+
 ## 1.2.0
 - Migrate the plugin from Angular to React to increase compatibility with Grafana 7.x.
 
