@@ -116,7 +116,10 @@ export class BigValueIcon extends PureComponent<Props> {
       display: 'flex',
     };
     const icon: CSSProperties = {
-      marginRight: '2px',
+      marginRight: '15px',
+    };
+    const iconTrend: CSSProperties = {
+      marginLeft: '15px',
     };
     if (queryState !== 'Done') {
       textValues.color = this.props.theme.colors.background.primary;
@@ -137,8 +140,7 @@ export class BigValueIcon extends PureComponent<Props> {
             {this.props.graphMode === BigValueIconGraphMode.Trend ? (
               <div style={flexDiv}>
                 <FormattedValueDisplay value={textValues} style={valueStyles} />
-                &nbsp;
-                <FontAwesomeIcon icon={iconTrendDefinition} />
+                <FontAwesomeIcon icon={iconTrendDefinition} style={iconTrend}/>
               </div>
             ) : (
               <div style={flexDiv}>
@@ -153,8 +155,7 @@ export class BigValueIcon extends PureComponent<Props> {
               <div style={valueAndTitleContainerStyles}>
                 <FontAwesomeIcon icon={iconDefinition} style={icon} />
                 <FormattedValueDisplay value={textValues} style={valueStyles} />
-                &nbsp;
-                <FontAwesomeIcon icon={iconTrendDefinition} />
+                <FontAwesomeIcon icon={iconTrendDefinition} style={iconTrend}/>
               </div>
             ) : (
               <div style={valueAndTitleContainerStyles}>
