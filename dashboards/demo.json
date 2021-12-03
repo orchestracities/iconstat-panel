@@ -155,7 +155,7 @@
                     }
                 ],
                 "title": "Demo 1",
-                "type": "oc-iconstat-panel"
+                "type": "orchestracities-iconstat-panel"
             },
             {
                 "cacheTimeout": null,
@@ -261,7 +261,7 @@
                     }
                 ],
                 "title": "Demo 2",
-                "type": "oc-iconstat-panel"
+                "type": "orchestracities-iconstat-panel"
             },
             {
                 "cacheTimeout": null,
@@ -369,7 +369,7 @@
                     }
                 ],
                 "title": "Demo 3",
-                "type": "oc-iconstat-panel"
+                "type": "orchestracities-iconstat-panel"
             },
             {
                 "cacheTimeout": null,
@@ -476,7 +476,7 @@
                     }
                 ],
                 "title": "Demo 4",
-                "type": "oc-iconstat-panel"
+                "type": "orchestracities-iconstat-panel"
             }
         ],
         "refresh": "",
