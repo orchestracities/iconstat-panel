@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.2
+- Remove code for color fixing (this can be custom set using overrides)
+- Improve spacing
+
 ## 1.2.1
 - Fix spaces between icon and values
 - In case of no value use no color style

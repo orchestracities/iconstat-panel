@@ -82,7 +82,7 @@ export class BigValueIcon extends PureComponent<Props> {
   render() {
     const { onClick, className, hasLinks } = this.props;
     const layout = buildLayout(this.props);
-    const queryState = this.props.state;
+    //const queryState = this.props.state;
     const panelStyles = layout.getPanelStyles();
     const valueAndTitleContainerStyles = layout.getValueAndTitleContainerStyles();
     const valueStyles = layout.getValueStyles();
@@ -116,15 +116,11 @@ export class BigValueIcon extends PureComponent<Props> {
       display: 'flex',
     };
     const icon: CSSProperties = {
-      marginRight: '2px',
+      marginRight: '15px',
     };
-    if (queryState !== 'Done') {
-      textValues.color = this.props.theme.colors.background.primary;
-      panelStyles.background = this.props.theme.colors.background.primary;
-      valueStyles.color = this.props.theme.colors.text.maxContrast;
-      titleStyles.color = this.props.theme.colors.text.maxContrast;
-      valueAndTitleContainerStyles.color = this.props.theme.colors.text.maxContrast;
-    }
+    const iconTrend: CSSProperties = {
+      marginLeft: '15px',
+    };
 
     return (
       <div className={className} style={panelStyles} onClick={onClick} title={tooltip}>
@@ -137,8 +133,7 @@ export class BigValueIcon extends PureComponent<Props> {
             {this.props.graphMode === BigValueIconGraphMode.Trend ? (
               <div style={flexDiv}>
                 <FormattedValueDisplay value={textValues} style={valueStyles} />
-                &nbsp;
-                <FontAwesomeIcon icon={iconTrendDefinition} />
+                <FontAwesomeIcon icon={iconTrendDefinition} style={iconTrend} />
               </div>
             ) : (
               <div style={flexDiv}>
@@ -153,8 +148,7 @@ export class BigValueIcon extends PureComponent<Props> {
               <div style={valueAndTitleContainerStyles}>
                 <FontAwesomeIcon icon={iconDefinition} style={icon} />
                 <FormattedValueDisplay value={textValues} style={valueStyles} />
-                &nbsp;
-                <FontAwesomeIcon icon={iconTrendDefinition} />
+                <FontAwesomeIcon icon={iconTrendDefinition} style={iconTrend} />
               </div>
             ) : (
               <div style={valueAndTitleContainerStyles}>

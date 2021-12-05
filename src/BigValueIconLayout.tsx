@@ -66,7 +66,7 @@ export abstract class BigValueIconLayout {
   getTitleStyles(): CSSProperties {
     const styles: CSSProperties = {
       fontSize: `${this.titleFontSize}px`,
-      lineHeight: LINE_HEIGHT,
+      lineHeight: LINE_HEIGHT * 2,
     };
 
     switch (this.props.colorMode) {
