@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.3
+- Sign with public key
+- Bump follow-redirects from 1.14.4 to 1.14.8
+
+
 ## 1.2.2
 - Remove code for color fixing (this can be custom set using overrides)
 - Improve spacing
