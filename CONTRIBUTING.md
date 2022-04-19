@@ -1,82 +1,48 @@
-# Building Map Plugin
+# Building Icon Stat Panel
 
 ## Requirements
 - git
 - npm / yarn
 
-## Install process
+## Set up dev environment
 
-- Clone "statistics-plugin" from repo to the grafana plugins folder. (eg. grafana_data/plugins)
+1. Launch services
 
-- Install plugin package dependencies
-
-```sh
-$ npm install
-```
-or
-```
-$ yarn install
-```
-
-If you are using Docker, the two steps above can be done as follows:
-```
-# First cd into this plugin's folder.
-docker run -it --rm -v "$PWD":/usr/src/app -w /usr/src/app node:8 npm install
-docker run -it --rm -v "$PWD":/usr/src/app -w /usr/src/app node:8 yarn install
-```
-
-## Test / Run
-
-- clone the crated data source.
-
-    ```sh
-    $ sh get-crate-plugin.sh
+    ```bash
+    docker-compose up -d
     ```
 
-- Start docker-compose.
+2. Import database
 
-    ```sh
-    $ docker-compose up -d
+    ```bash
+    sh config.sh
+    sh create-table.sh
     ```
 
-Once the services are up and running, set-up the data as follows:
 
-- Populate the database:
+3. Set-up grafana
 
-    ```sh
-    $ sh create-table.sh
+    ```bash
+    sh set-up-grafana.sh
     ```
 
-- Set-up grafana:
 
-    ```sh
-    $ sh set-up-grafana.sh
+4. In case of changes to code to restart grafana
+
+    ```bash
+    yarn dev && docker-compose restart grafana
     ```
 
-**NOTE:** Unless you remove the docker volumes, you need to run the last two
-steps above only the first time)
+5. Build plugin in production mode
 
-At this point in time login in grafana using admin/admin and you should be
-able to see a dashboard called `Dashboard`. If there is an error regarding
-the datasource metadata, just go to the `datasource` menu, open the datasource
-and click `save & test`.
+   ```bash
+   yarn build
+   ```
 
-## Other Tasks
+## Learn more
 
-- `Compile the code` + restart grafana
-```sh
-$ yarn build && docker-compose restart grafana
-```
-
-Or using docker:
-```
-docker run -it --rm -v "$PWD":/usr/src/app -w /usr/src/app node:8 yarn build
-docker-compose restart grafana
-```
-
-## Notes
-
-Default start page url: http://localhost:3000
-Default user/pass is admin/admin.
-
-If you are trying to install packages and you get console permissions errors, it could be related with grafana changing owner from dist files.
+- [Build a panel plugin tutorial](https://grafana.com/tutorials/build-a-panel-plugin)
+- [Grafana documentation](https://grafana.com/docs/)
+- [Grafana Tutorials](https://grafana.com/tutorials/) - Grafana Tutorials are step-by-step guides that help you make the most of Grafana
+- [Grafana UI Library](https://developers.grafana.com/ui) - UI components to help you build interfaces using Grafana Design System
+- [Using Font Awesome with React](https://fontawesome.com/v5.15/how-to-use/on-the-web/using-with/react)
