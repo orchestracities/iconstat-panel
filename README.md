@@ -1,4 +1,5 @@
 # Orchestra Cities - Icon Stat Panel
+
 This plugin extends Grafana Stat panel with icons support. More info at https://grafana.com/docs/grafana/latest/visualizations/stat-panel/
 
 Icons supported are from [FontAwesome](https://fontawesome.com/)
@@ -22,3 +23,7 @@ It requires Grafana >=8.2.0
 Panels are the building blocks of Grafana. They allow you to visualize data in different ways. While Grafana has several types of panels already built-in, you can also build your own panel, to add support for other visualizations.
 
 For more information about panels, refer to the documentation on [Panels](https://grafana.com/docs/grafana/latest/features/panels/panels/)
+
+## Set up dev environment
+
+See [Contributing](https://github.com/orchestracities/iconstat-panel/blob/master/CONTRIBUTING.md)
