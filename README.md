@@ -1,4 +1,4 @@
-# Orchestra Cities - Stat Panel
+# Orchestra Cities - Icon Stat Panel
 This plugin extends Grafana Stat panel with icons support. More info at https://grafana.com/docs/grafana/latest/visualizations/stat-panel/
 
 Icons supported are from [FontAwesome](https://fontawesome.com/)
@@ -14,6 +14,8 @@ Options available:
 - Trend (it displays an arrow showing the trend of the data)
 
 ![Options](/options.png)
+
+It requires Grafana >=8.2.0
 
 ## What is Grafana Panel Plugin?
 
