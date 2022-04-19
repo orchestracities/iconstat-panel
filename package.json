@@ -29,6 +29,6 @@
     "@fortawesome/react-fontawesome": "^0.1.16",
     "@types/tinycolor2": "^1.4.3",
     "tinycolor2": "^1.4.2",
-    "yarn": "^1.22.17"
+    "yarn": "^1.22.18"
   }
 }

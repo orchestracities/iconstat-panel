@@ -1,6 +1,7 @@
 # Building Icon Stat Panel
 
 ## Requirements
+
 - git
 - npm / yarn
 
@@ -19,13 +20,11 @@
     sh create-table.sh
     ```
 
-
 3. Set-up grafana
 
     ```bash
     sh set-up-grafana.sh
     ```
-
 
 4. In case of changes to code to restart grafana
 
