@@ -4,7 +4,7 @@ This plugin extends Grafana Stat panel with icons support. More info at https://
 
 Icons supported are from [FontAwesome](https://fontawesome.com/)
 
-![Example](https://raw.githubusercontent.com/orchestracities/statistics-panel/master/example.png)
+![Example](https://raw.githubusercontent.com/orchestracities/statistics-panel/master/src/img/example.png)
 
 Options available:
 - Icon selection
