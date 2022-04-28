@@ -11,8 +11,8 @@
     },
     "keywords": ["icons", "trend"],
     "logos": {
-      "small": "img/icn-singlestat-panel.svg",
-      "large": "img/icn-singlestat-panel.svg"
+      "small": "img/icn-iconstat-panel.svg",
+      "large": "img/icn-iconstat-panel.svg"
     },
     "links": [
       {
@@ -24,7 +24,7 @@
         "url": "https://github.com/orchestracities/statistics-panel/blob/master/LICENSE"
       }
     ],
-    "screenshots": [{"name": "example", "path": "example.png"}],
+    "screenshots": [{"name": "example", "path": "img/example.png"}],
     "version": "%VERSION%",
     "updated": "%TODAY%"
   },
